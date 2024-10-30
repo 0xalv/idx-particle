@@ -16,7 +16,29 @@ import {
   lineaSepolia,
   mainnet,
   polygon,
+  defineChain,
 } from "@particle-network/connectkit/chains";
+
+const neoXTestnet = defineChain({
+  id: 12227332,
+  name: "neoX Testnet",
+  nativeCurrency: {
+    name: "Gas",
+    symbol: "GAS",
+    decimals: 18,
+  },
+  rpcUrls: {
+    default: { http: ["https://neoxt4seed1.ngd.network"] },
+  },
+  blockExplorers: {
+    default: {
+      name: "NEOX Chain Explorer",
+      url: "https://xt4scan.ngd.network/",
+    },
+  },
+  testnet: true,
+});
+
 import { evmWalletConnectors } from "@particle-network/connectkit/evm";
 // evm end
 
@@ -32,7 +54,7 @@ if (!projectId || !clientKey || !appId) {
 
 const supportChains: Chain[] = [];
 // evm start
-supportChains.push(mainnet, base, arbitrum, polygon, lineaSepolia);
+supportChains.push(neoXTestnet, mainnet, base, arbitrum, polygon, lineaSepolia);
 // evm end
 
 const config = createConfig({
@@ -45,6 +67,12 @@ const config = createConfig({
       { walletId: "coinbaseWallet", label: "Popular" },
     ],
     language: "en-US",
+    theme: {
+      // primary button
+      "--pcm-primary-button-color": "#ffffff",
+      "--pcm-primary-button-bankground": "#01bec3",
+      "--pcm-primary-button-hover-background": "#353738",
+    },
   },
   walletConnectors: [
     authWalletConnectors(),

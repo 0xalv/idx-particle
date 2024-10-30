@@ -1,0 +1,83 @@
+{
+  "id": "settoken-eth.dpi",
+  "name": "DeFi Pulse Index",
+  "symbol": "DPI",
+  "address": "0x1494ca1f11d487c2bbe4543e90080aeba4ba3c2b",
+  "deploy-timestamp": "1729956747",
+  "price-data": {
+    "price": "67.480923",
+    "24h-delta": "3.54",
+    "7d-delta": "-5.32",
+    "1m-delta": "356.45",
+    "3m-delta": "-90.45",
+    "6m-delta": "-93.45"
+  },
+  "mcap-data": {
+    "mcap": "908123",
+    "24h-delta": "3.54",
+    "7d-delta": "-5.32",
+    "1m-delta": "356.45",
+    "3m-delta": "-90.45",
+    "6m-delta": "-94.45"
+  },
+  "fees-data": {
+    "fee": "0.25",
+    "total": "1288",
+    "24h-delta": "2",
+    "7d-delta": "222",
+    "1m-delta": "804",
+    "3m-delta": "1101",
+    "6m-delta": "1101"
+  },
+  "token-data": {
+    "supply": "13555",
+    "issuance-data": {
+      "total": "18555",
+      "24h-delta": "23",
+      "7d-delta": "123",
+      "1m-delta": "356",
+      "3m-delta": "3433",
+      "6m-delta": "3733"
+    },
+    "redeem-data": {
+      "total": "1234",
+      "24h-delta": "34",
+      "7d-delta": "333",
+      "1m-delta": "356",
+      "3m-delta": "1000",
+      "6m-delta": "1100"
+    },
+    "distribution": [
+      {
+        "symbol": "WBTC",
+        "address": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+        "portion": "50"
+      },
+      {
+        "symbol": "WETH",
+        "address": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+        "portion": "10"
+      },
+      {
+        "symbol": "ABC",
+        "address": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+        "portion": "10"
+      },
+      {
+        "symbol": "DEF",
+        "address": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+        "portion": "15"
+      },
+      {
+        "symbol": "GHI",
+        "address": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+        "portion": "10"
+      },
+      {
+        "symbol": "JKL",
+        "address": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+        "portion": "5"
+      }
+    ]
+  }
+}

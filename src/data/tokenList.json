@@ -1,0 +1,702 @@
+[
+  {
+    "ticker": "BTC",
+    "img": "/src/assets/logos/BTC.png",
+    "name": "Bitcoin",
+    "address": "0x735461a1ce356c382396c45da35eff9a586282db",
+    "decimals": 18
+  },
+  {
+    "ticker": "ETH",
+    "img": "/src/assets/logos/ETH.png",
+    "name": "Ethereum",
+    "address": "0x8858bd3ca0677e85cb72aa8fe6780b9c037d73eb",
+    "decimals": 18
+  },
+  {
+    "ticker": "BNB",
+    "img": "/src/assets/logos/BNB.png",
+    "name": "BNB",
+    "address": "0x5fc68b614e1d1cafe9da8a74b89100d77f447842",
+    "decimals": 18
+  },
+  {
+    "ticker": "USDC",
+    "img": "/src/assets/logos/USDC.png",
+    "name": "USDC",
+    "address": "0x736d92ad91633f2e627cf97e33f73f8f6c7a7ef5",
+    "decimals": 18
+  },
+  {
+    "ticker": "UNI",
+    "img": "/src/assets/logos/UNI.png",
+    "name": "Uniswap",
+    "address": "0x1e644ff194abc4a282bf38c4be24ba96a40d6abd",
+    "decimals": 18
+  },
+  {
+    "ticker": "DOGE",
+    "img": "/src/assets/logos/DOGE.png",
+    "name": "Dogecoin",
+    "address": "0x3895aedeb120f47bb9ad896a5de3a8443b0cedda",
+    "decimals": 18
+  },
+  {
+    "ticker": "SOL",
+    "img": "/src/assets/logos/SOL.png",
+    "name": "Solana",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "XRP",
+    "img": "/src/assets/logos/XRP.png",
+    "name": "XRP",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "STETH",
+    "img": "/src/assets/logos/STETH.png",
+    "name": "Lido Staked Ether",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "TRX",
+    "img": "/src/assets/logos/TRX.png",
+    "name": "TRON",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "TON",
+    "img": "/src/assets/logos/TON.png",
+    "name": "Toncoin",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "ADA",
+    "img": "/src/assets/logos/ADA.png",
+    "name": "Cardano",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "AVAX",
+    "img": "/src/assets/logos/AVAX.png",
+    "name": "Avalanche",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "SHIB",
+    "img": "/src/assets/logos/SHIB.png",
+    "name": "Shiba Inu",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "WSTETH",
+    "img": "/src/assets/logos/WSTETH.png",
+    "name": "Wrapped stETH",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "USDT",
+    "img": "/src/assets/logos/USDT.png",
+    "name": "Tether",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "WBTC",
+    "img": "/src/assets/logos/WBTC.png",
+    "name": "Wrapped Bitcoin",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "WETH",
+    "img": "/src/assets/logos/WETH.png",
+    "name": "WETH",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "LINK",
+    "img": "/src/assets/logos/LINK.png",
+    "name": "Chainlink",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "BCH",
+    "img": "/src/assets/logos/BCH.png",
+    "name": "Bitcoin Cash",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "DOT",
+    "img": "/src/assets/logos/DOT.png",
+    "name": "Polkadot",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "DAI",
+    "img": "/src/assets/logos/DAI.png",
+    "name": "Dai",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "LEO",
+    "img": "/src/assets/logos/LEO.png",
+    "name": "LEO Token",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "SUI",
+    "img": "/src/assets/logos/SUI.png",
+    "name": "Sui",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "NEAR",
+    "img": "/src/assets/logos/NEAR.png",
+    "name": "NEAR Protocol",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "LTC",
+    "img": "/src/assets/logos/LTC.png",
+    "name": "Litecoin",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "TAO",
+    "img": "/src/assets/logos/TAO.png",
+    "name": "Bittensor",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "APT",
+    "img": "/src/assets/logos/APT.png",
+    "name": "Aptos",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "PEPE",
+    "img": "/src/assets/logos/PEPE.png",
+    "name": "Pepe",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "WEETH",
+    "img": "/src/assets/logos/WEETH.png",
+    "name": "Wrapped eETH",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "ICP",
+    "img": "/src/assets/logos/ICP.png",
+    "name": "Internet Computer",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "FET",
+    "img": "/src/assets/logos/FET.png",
+    "name": "Artificial Superintelligence Alliance",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "KAS",
+    "img": "/src/assets/logos/KAS.png",
+    "name": "Kaspa",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "FDUSD",
+    "img": "/src/assets/logos/FDUSD.png",
+    "name": "First Digital USD",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "XMR",
+    "img": "/src/assets/logos/XMR.png",
+    "name": "Monero",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "POL",
+    "img": "/src/assets/logos/POL.png",
+    "name": "POL (ex-MATIC)",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "ETC",
+    "img": "/src/assets/logos/ETC.png",
+    "name": "Ethereum Classic",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "XLM",
+    "img": "/src/assets/logos/XLM.png",
+    "name": "Stellar",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "STX",
+    "img": "/src/assets/logos/STX.png",
+    "name": "Stacks",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "WIF",
+    "img": "/src/assets/logos/WIF.png",
+    "name": "dogwifhat",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "OKB",
+    "img": "/src/assets/logos/OKB.png",
+    "name": "OKB",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "USDE",
+    "img": "/src/assets/logos/USDE.png",
+    "name": "Ethena USDe",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "IMX",
+    "img": "/src/assets/logos/IMX.png",
+    "name": "Immutable",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "AAVE",
+    "img": "/src/assets/logos/AAVE.png",
+    "name": "Aave",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "FIL",
+    "img": "/src/assets/logos/FIL.png",
+    "name": "Filecoin",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "CRO",
+    "img": "/src/assets/logos/CRO.png",
+    "name": "Cronos",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "RENDER",
+    "img": "/src/assets/logos/RENDER.png",
+    "name": "Render",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "OP",
+    "img": "/src/assets/logos/OP.png",
+    "name": "Optimism",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "MNT",
+    "img": "/src/assets/logos/MNT.png",
+    "name": "Mantle",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "ARB",
+    "img": "/src/assets/logos/ARB.png",
+    "name": "Arbitrum",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "HBAR",
+    "img": "/src/assets/logos/HBAR.png",
+    "name": "Hedera",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "INJ",
+    "img": "/src/assets/logos/INJ.png",
+    "name": "Injective",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "FTM",
+    "img": "/src/assets/logos/FTM.png",
+    "name": "Fantom",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "VET",
+    "img": "/src/assets/logos/VET.png",
+    "name": "VeChain",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "WBT",
+    "img": "/src/assets/logos/WBT.png",
+    "name": "WhiteBIT Coin",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "ATOM",
+    "img": "/src/assets/logos/ATOM.png",
+    "name": "Cosmos Hub",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "RUNE",
+    "img": "/src/assets/logos/RUNE.png",
+    "name": "THORChain",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "GRT",
+    "img": "/src/assets/logos/GRT.png",
+    "name": "The Graph",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "SEI",
+    "img": "/src/assets/logos/SEI.png",
+    "name": "Sei",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "BGB",
+    "img": "/src/assets/logos/BGB.png",
+    "name": "Bitget Token",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "WETH",
+    "img": "/src/assets/logos/WETH.png",
+    "name": "Binance-Peg WETH",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "BONK",
+    "img": "/src/assets/logos/BONK.png",
+    "name": "Bonk",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "RETH",
+    "img": "/src/assets/logos/RETH.png",
+    "name": "Rocket Pool ETH",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "FLOKI",
+    "img": "/src/assets/logos/FLOKI.png",
+    "name": "FLOKI",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "POPCAT",
+    "img": "/src/assets/logos/POPCAT.png",
+    "name": "Popcat",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "THETA",
+    "img": "/src/assets/logos/THETA.png",
+    "name": "Theta Network",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "OM",
+    "img": "/src/assets/logos/OM.png",
+    "name": "MANTRA",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "AR",
+    "img": "/src/assets/logos/AR.png",
+    "name": "Arweave",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "MKR",
+    "img": "/src/assets/logos/MKR.png",
+    "name": "Maker",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "METH",
+    "img": "/src/assets/logos/METH.png",
+    "name": "Mantle Staked Ether",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "GT",
+    "img": "/src/assets/logos/GT.png",
+    "name": "Gate",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "PYTH",
+    "img": "/src/assets/logos/PYTH.png",
+    "name": "Pyth Network",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "TIA",
+    "img": "/src/assets/logos/TIA.png",
+    "name": "Celestia",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "HNT",
+    "img": "/src/assets/logos/HNT.png",
+    "name": "Helium",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "SOLVBTC",
+    "img": "/src/assets/logos/SOLVBTC.png",
+    "name": "Solv Protocol SolvBTC",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "JUP",
+    "img": "/src/assets/logos/JUP.png",
+    "name": "Jupiter",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "MATIC",
+    "img": "/src/assets/logos/MATIC.png",
+    "name": "Polygon",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "ALGO",
+    "img": "/src/assets/logos/ALGO.png",
+    "name": "Algorand",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "ONDO",
+    "img": "/src/assets/logos/ONDO.png",
+    "name": "Ondo",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "QNT",
+    "img": "/src/assets/logos/QNT.png",
+    "name": "Quant",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "KCS",
+    "img": "/src/assets/logos/KCS.png",
+    "name": "KuCoin",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "WLD",
+    "img": "/src/assets/logos/WLD.png",
+    "name": "Worldcoin",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "LDO",
+    "img": "/src/assets/logos/LDO.png",
+    "name": "Lido DAO",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "JASMY",
+    "img": "/src/assets/logos/JASMY.png",
+    "name": "JasmyCoin",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "BSV",
+    "img": "/src/assets/logos/BSV.png",
+    "name": "Bitcoin SV",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "BTT",
+    "img": "/src/assets/logos/BTT.png",
+    "name": "BitTorrent",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "BRETT",
+    "img": "/src/assets/logos/BRETT.png",
+    "name": "Brett",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "FTN",
+    "img": "/src/assets/logos/FTN.png",
+    "name": "Fasttoken",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "EETH",
+    "img": "/src/assets/logos/EETH.png",
+    "name": "ether.fi Staked ETH",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "W",
+    "img": "/src/assets/logos/W.png",
+    "name": "Wormhole",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "CORE",
+    "img": "/src/assets/logos/CORE.png",
+    "name": "Core",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "FLOW",
+    "img": "/src/assets/logos/FLOW.png",
+    "name": "Flow",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "GALA",
+    "img": "/src/assets/logos/GALA.png",
+    "name": "GALA",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "EZETH",
+    "img": "/src/assets/logos/EZETH.png",
+    "name": "Renzo Restaked ETH",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "BEAM",
+    "img": "/src/assets/logos/BEAM.png",
+    "name": "Beam",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "AERO",
+    "img": "/src/assets/logos/AERO.png",
+    "name": "Aerodrome Finance",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "CFX",
+    "img": "/src/assets/logos/CFX.png",
+    "name": "Conflux",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "NOT",
+    "img": "/src/assets/logos/NOT.png",
+    "name": "Notcoin",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "STRK",
+    "img": "/src/assets/logos/STRK.png",
+    "name": "Starknet",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  },
+  {
+    "ticker": "ENA",
+    "img": "/src/assets/logos/ENA.png",
+    "name": "Ethena",
+    "address": "0x0000000000000000000000000000000000000000",
+    "decimals": 18
+  }
+]
