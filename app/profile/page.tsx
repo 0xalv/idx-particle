@@ -1,11 +1,11 @@
 "use client";
 
-import ProductTable from "@/components/dashboard/ProductTable";
+import Profile from "@/components/profile/Profile";
 
 const page = () => {
   return (
     <div>
-      <ProductTable />
+      <Profile />
     </div>
   );
 };

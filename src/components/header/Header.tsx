@@ -31,16 +31,16 @@ const Header: React.FC = () => {
           />
         </Link>
         <Link href="/" className={linkClass("/")}>
-          Assets
+          Dashboard
         </Link>
         <Link href="/factory" className={linkClass("/factory")}>
           Factory
         </Link>
-        <Link href="/swap" className={linkClass("/swap")}>
-          Swap
-        </Link>
-        <Link href="/indexes" className={linkClass("/swap")}>
+        <Link href="/indexes" className={linkClass("/indexes")}>
           Indexes
+        </Link>
+        <Link href="/profile" className={linkClass("/profile")}>
+          My Profile
         </Link>
       </div>
 

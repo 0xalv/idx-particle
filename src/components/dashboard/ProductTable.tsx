@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-// import products from "../data/products.json";
 import products from "@/data/products.json";
 
 const ProductTable = () => {
@@ -34,7 +33,7 @@ const ProductTable = () => {
       </div>
 
       <div className="mx-auto my-12 flex max-w-screen-2xl flex-col">
-        <span className="text-[#1d2928] font-semibold">All Products</span>
+        <span className="text-[#1d2928] font-semibold">All Indexes</span>
 
         {/* Desktop Table */}
         <div className="bg-white border-gray-100 mt-8 w-full overflow-auto rounded-3xl border py-4 shadow-sm hidden md:flex flex-col">
@@ -43,7 +42,7 @@ const ProductTable = () => {
               onClick={handleHeaderClick}
               className="text-[#627171] hover:text-[#364647] min-w-[410px] cursor-pointer items-center px-6 text-left text-sm font-medium"
             >
-              Product
+              Index
               {isArrowDown ? (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -117,7 +116,7 @@ const ProductTable = () => {
                 <a
                   key={index}
                   className="hover:bg-gray-100 hidden h-[60px] min-w-fit items-center justify-between odd:border-[#FBFCFC] odd:bg-[#FBFCFC] even:border-transparent hover:cursor-pointer md:flex"
-                  href={`/products/${product.symbol.toLowerCase()}`}
+                  href={`/products/${product.address}`}
                 >
                   <div className="text-[#627171] text-sm font-medium min-w-[410px] flex items-center pl-6">
                     <div className="mr-2 overflow-hidden rounded-full">

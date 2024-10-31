@@ -56,7 +56,7 @@ const Indexes: React.FC<IndexesProps> = ({ status }) => {
           <p className="text-red-500">{error}</p>
         ) : (
           <div className="grid grid-cols-1 gap-4">
-            <p>I entered</p>
+            <p>Indexes Deployed:</p>
             {sets.map((set, index) => (
               <div key={index} className="p-4 bg-gray-100 rounded shadow">
                 <p className="font-bold">Set Address:</p>

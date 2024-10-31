@@ -4,6 +4,15 @@ import React, { useEffect, useState } from "react";
 import IndexChart from "@/components/analytics/IndexChart";
 import IndexDetails from "@/components/analytics/IndexDetails";
 import IndexDistribution from "@/components/analytics/IndexDistribution";
+import { useParams } from "next/navigation";
+
+import {
+  usePublicClient,
+  useWallets,
+  useAccount,
+} from "@particle-network/connectkit";
+import { Erc20, SetToken, BasicIssuanceModule } from "@/abis";
+import { parseUnits, Abi, Address } from "viem";
 
 type DataPoint = {
   timestamp: string;
@@ -46,6 +55,11 @@ type Distribution = {
 };
 
 const ProductInfo: React.FC = () => {
+  const { chain, address, isConnected } = useAccount();
+  const [primaryWallet] = useWallets();
+  const { indexAddress } = useParams<{ indexAddress: `0x${string}` }>(); // Get the address from the URL
+  const [tokenAmount, setTokenAmount] = useState<number>(1);
+
   const [chartData, setChartData] = useState<DataPoint[]>([]);
   const [priceData, setPriceData] = useState<PriceData | null>(null);
   const [tokenData, setTokenData] = useState<TokenData | null>(null);
@@ -56,11 +70,14 @@ const ProductInfo: React.FC = () => {
   // Available time ranges for easy scalability
   const timeRanges = ["24h-ts", "7d-ts", "1m-ts", "3m-ts", "6m-ts"] as const;
 
+  const basicIssuanceAddress = process.env
+    .NEXT_PUBLIC_BASIC_ISSUANCE_MODULE as Address;
+
   // Fetch chart data from advanced-info.json and token data from basic-info.json
   useEffect(() => {
     const fetchChartData = async () => {
       try {
-        const response = await fetch("/advanced-info.json");
+        const response = await fetch("/src/data/advanced-info.json");
         const json = await response.json();
         setPriceData(json["price-data"]);
         setChartData(json["price-data"]["24h-ts"]); // Default to 24h data
@@ -71,7 +88,7 @@ const ProductInfo: React.FC = () => {
 
     const fetchTokenData = async () => {
       try {
-        const response = await fetch("/basic-info.json");
+        const response = await fetch("/src/data/basic-info.json");
         const json = await response.json();
         setTokenData(json); // Set the token data for IndexDetails
       } catch (error) {
@@ -89,6 +106,51 @@ const ProductInfo: React.FC = () => {
       setChartData(priceData[selectedRange]);
     }
   }, [selectedRange, priceData]);
+
+  const handleIssue = async () => {
+    if (!primaryWallet || !isConnected || !address) return;
+
+    try {
+      const walletClient = primaryWallet.getWalletClient();
+      const transaction = await walletClient.writeContract({
+        address: basicIssuanceAddress,
+        abi: BasicIssuanceModule as Abi,
+        functionName: "issue",
+        args: [indexAddress, parseUnits(`${tokenAmount}`, 18), address],
+        account: address as Address,
+        chain: chain,
+      });
+      console.log("Issue transaction hash:", transaction);
+    } catch (error) {
+      console.error("Issue failed:", error);
+    }
+  };
+
+  const handleRedeem = async () => {
+    if (!primaryWallet || !isConnected || !address) return;
+
+    try {
+      const walletClient = primaryWallet.getWalletClient();
+      const transaction = await walletClient.writeContract({
+        address: basicIssuanceAddress,
+        abi: BasicIssuanceModule as Abi,
+        functionName: "redeem",
+        args: [indexAddress, parseUnits(`${tokenAmount}`, 18), address],
+        account: address as Address,
+        chain: chain,
+      });
+      console.log("Redeem transaction hash:", transaction);
+    } catch (error) {
+      console.error("Redeem failed:", error);
+    }
+  };
+
+  const handleInputChangeAmount = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { value } = event.target;
+    setTokenAmount(value === null ? 0 : parseFloat(value));
+  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 py-16 px-2 sm:px-4 md:px-6 lg:px-8">
@@ -147,6 +209,26 @@ const ProductInfo: React.FC = () => {
             <IndexDistribution tokenData={tokenData} />
           </div>
         )}
+      </div>
+      <div className="flex justify-center space-x-4 my-4">
+        <input
+          type="number"
+          placeholder="Amount"
+          value={tokenAmount}
+          onChange={handleInputChangeAmount}
+        />
+        <button
+          onClick={handleIssue}
+          className="px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700"
+        >
+          Issue
+        </button>
+        <button
+          onClick={handleRedeem}
+          className="px-4 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700"
+        >
+          Redeem
+        </button>
       </div>
     </div>
   );
