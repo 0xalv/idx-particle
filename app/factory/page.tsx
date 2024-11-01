@@ -32,12 +32,17 @@ const Factory: React.FC = () => {
   const [primaryWallet] = useWallets();
   const { chain, address, isConnected } = useAccount();
 
-  const managerAddress = process.env
-    .NEXT_PUBLIC_MANAGER_ADDRESS as `0x${string}`;
+  // ! DEPRECATED now use connected address
+  // const managerAddress = process.env
+  //   .NEXT_PUBLIC_MANAGER_ADDRESS as `0x${string}`;
   const setTokenCreatorAddress = process.env
     .NEXT_PUBLIC_SET_TOKEN_CREATOR as `0x${string}`;
   const basicIssuanceModuleAddress = process.env
     .NEXT_PUBLIC_BASIC_ISSUANCE_MODULE as `0x${string}`;
+
+  if (!setTokenCreatorAddress || !basicIssuanceModuleAddress) {
+    throw new Error("Missing contract address");
+  }
 
   const openModal = () => {
     setIsOpen(true);
@@ -93,22 +98,23 @@ const Factory: React.FC = () => {
     const componentUnits = selectedTokens.map((token) =>
       parseUnits(token.amount.toString(), token.token.decimals)
     );
-    const modules = [basicIssuanceModuleAddress];
 
     try {
       const walletClient = primaryWallet.getWalletClient();
+      const createIndexArgs = [
+        componentAddresses,
+        componentUnits,
+        [basicIssuanceModuleAddress],
+        address as Address,
+        indexName,
+        indexSymbol,
+      ];
+      console.table(createIndexArgs);
       const hash = await walletClient.writeContract({
         address: setTokenCreatorAddress,
         abi: SetTokenCreator as Abi,
         functionName: "create",
-        args: [
-          componentAddresses,
-          componentUnits,
-          modules,
-          managerAddress,
-          indexName,
-          indexSymbol,
-        ],
+        args: createIndexArgs,
         chain: chain,
         account: address as Address,
       });

@@ -12,6 +12,9 @@ interface IndexesProps {
 
 const Indexes: React.FC<IndexesProps> = ({ status }) => {
   const controllerAddress = process.env.NEXT_PUBLIC_CONTROLLER as Address;
+  if(!controllerAddress) {
+    throw new Error("Missing contract address");
+  }
   const publicClient = usePublicClient();
   const { address, isConnected } = useAccount();
 
