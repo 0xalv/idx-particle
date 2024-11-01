@@ -39,6 +39,7 @@ const Factory: React.FC = () => {
     .NEXT_PUBLIC_SET_TOKEN_CREATOR as `0x${string}`;
   const basicIssuanceModuleAddress = process.env
     .NEXT_PUBLIC_BASIC_ISSUANCE_MODULE as `0x${string}`;
+  const multicllAddress = process.env.NEXT_MULTICALL_ADDRESS as `0x${string}`;
 
   if (!setTokenCreatorAddress || !basicIssuanceModuleAddress) {
     throw new Error("Missing contract address");
