@@ -52,7 +52,6 @@ const SetDetails: React.FC<SetDetailsProps> = () => {
   const address = params.address as `0x${string}`;
 
   const [tokenAmount, setTokenAmount] = useState<number>(1);
-  const [approvalPosition, setApprovalPosition] = useState<number>(0);
   const [tokenContracts, setTokenContracts] = useState<ContractData[]>([]);
   const [stateComponentDecimals, setStateComponentDecimals] = useState<
     ContractData[]
@@ -274,51 +273,6 @@ const SetDetails: React.FC<SetDetailsProps> = () => {
     setTokenAmount(value === "" ? 0 : parseFloat(value));
   };
 
-  const handleInputChangeApproval = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const { value } = event.target;
-    setApprovalPosition(value === "" ? 0 : parseInt(value));
-  };
-
-  // Contract write functions
-  const handleApprove = async (position: number) => {
-    if (!primaryWallet || !componentUnits || !chain || !userWallet) return;
-    try {
-      const walletClient = primaryWallet.getWalletClient();
-      console.log("CU: ", componentUnits);
-      const hash = await walletClient.writeContract({
-        address: componentUnits[0][position] as `0x${string}`,
-        abi: Erc20 as Abi,
-        functionName: "approve",
-        args: [basicIssuanceModuleAddress, componentUnits[1][position]],
-        chain,
-        account: userWallet as Address,
-      });
-      console.log("Approval hash:", hash);
-    } catch (error) {
-      console.error("Error approving token:", error);
-    }
-  };
-
-  const handleIssue = async () => {
-    if (!primaryWallet || !chain || !userWallet) return;
-    try {
-      const walletClient = primaryWallet.getWalletClient();
-      const hash = await walletClient.writeContract({
-        address: basicIssuanceModuleAddress,
-        abi: BasicIssuanceModule as Abi,
-        functionName: "issue",
-        args: [address, parseEther(`${tokenAmount}`), userWallet],
-        chain,
-        account: userWallet as Address,
-      });
-      console.log("Issue hash:", hash);
-    } catch (error) {
-      console.error("Error issuing tokens:", error);
-    }
-  };
-
   const handleInitialize = async () => {
     if (!primaryWallet || !chain || !userWallet) return;
     try {
@@ -352,35 +306,6 @@ const SetDetails: React.FC<SetDetailsProps> = () => {
       console.log("Redeem hash:", hash);
     } catch (error) {
       console.error("Error redeeming tokens:", error);
-    }
-  };
-
-  const handleBatchApprove = async () => {
-    if (!primaryWallet || !componentUnits || !chain || !userWallet) return;
-    try {
-      const walletClient = primaryWallet.getWalletClient();
-
-      // Loop through each token position in componentUnits[0]
-      for (let i = 0; i < componentUnits[0].length; i++) {
-        const tokenAddress = componentUnits[0][i] as `0x${string}`;
-        const tokenAmount = componentUnits[1][i];
-
-        // Approve the token
-        await walletClient.writeContract({
-          address: tokenAddress,
-          abi: Erc20 as Abi,
-          functionName: "approve",
-          args: [basicIssuanceModuleAddress, tokenAmount],
-          chain,
-          account: userWallet as Address,
-        });
-        console.log(
-          `Approval successful for token at position ${i}:`,
-          tokenAddress
-        );
-      }
-    } catch (error) {
-      console.error("Error in batch approval:", error);
     }
   };
 
@@ -518,7 +443,7 @@ const SetDetails: React.FC<SetDetailsProps> = () => {
 
             <div className="space-y-2">
               <div className="text-sm text-gray-600">
-                Underlying Assets Distribution
+                Underlying Assets Required
               </div>
               <div className="flex flex-wrap gap-2">
                 {getDistributionDisplay().map((distribution, index) => (
@@ -552,74 +477,45 @@ const SetDetails: React.FC<SetDetailsProps> = () => {
               </button>
             </div>
           ) : (
-            <div className="space-y-6">
+            <div className="space-y-4 bg-white shadow-md rounded-lg p-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Amount of Index Tokens
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Amount of Index Tokens to Issue/Redeem
                 </label>
-                <input
-                  type="number"
-                  value={tokenAmount}
-                  onChange={handleInputChangeAmount}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Enter amount"
-                />
-              </div>
+                <div className="flex flex-col sm:flex-row items-center gap-4">
+                  <input
+                    type="number"
+                    value={tokenAmount}
+                    onChange={handleInputChangeAmount}
+                    className="flex-grow px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-shadow"
+                    placeholder="Enter amount"
+                  />
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Token Position for Approval
-                </label>
-                <input
-                  type="number"
-                  value={approvalPosition}
-                  onChange={handleInputChangeApproval}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Enter position"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <button
-                  onClick={handleBatchApprove}
-                  disabled={!isConnected || !componentUnits}
-                  className="px-4 py-2 text-white rounded-lg hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  style={{ backgroundColor: COLORS[0] }}
-                >
-                  Batch Approve
-                </button>
-                <button
-                  onClick={() => handleApprove(approvalPosition)}
-                  disabled={!isConnected || !componentUnits}
-                  className="px-4 py-2 text-white rounded-lg hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  style={{ backgroundColor: COLORS[1] }}
-                >
-                  Approve
-                </button>
-                <button
-                  onClick={handleIssue}
-                  disabled={!isConnected}
-                  className="px-4 py-2 text-white rounded-lg hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  style={{ backgroundColor: COLORS[2] }}
-                >
-                  Issue
-                </button>
-                <button
-                  onClick={handleBatchApproveAndIssue}
-                  disabled={!isConnected}
-                  className="px-4 py-2 text-white rounded-lg hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  style={{ backgroundColor: COLORS[4] }}
-                >
-                  Batch Approve and Issue
-                </button>
-                <button
-                  onClick={handleRedeem}
-                  disabled={!isConnected}
-                  className="px-4 py-2 text-white rounded-lg hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  style={{ backgroundColor: COLORS[3] }}
-                >
-                  Redeem
-                </button>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={handleBatchApproveAndIssue}
+                      disabled={!isConnected}
+                      className="px-4 py-2 text-white font-semibold rounded-lg hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+                      style={{
+                        backgroundColor: "#007BFF",
+                        boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+                      }}
+                    >
+                      Issue
+                    </button>
+                    <button
+                      onClick={handleRedeem}
+                      disabled={!isConnected}
+                      className="px-4 py-2 text-white font-semibold rounded-lg hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+                      style={{
+                        backgroundColor: "#109b43",
+                        boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+                      }}
+                    >
+                      Redeem
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           )}
