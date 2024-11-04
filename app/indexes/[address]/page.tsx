@@ -286,6 +286,7 @@ const SetDetails: React.FC<SetDetailsProps> = () => {
     if (!primaryWallet || !componentUnits || !chain || !userWallet) return;
     try {
       const walletClient = primaryWallet.getWalletClient();
+      console.log("CU: ", componentUnits);
       const hash = await walletClient.writeContract({
         address: componentUnits[0][position] as `0x${string}`,
         abi: Erc20 as Abi,
@@ -354,6 +355,76 @@ const SetDetails: React.FC<SetDetailsProps> = () => {
     }
   };
 
+  const handleBatchApprove = async () => {
+    if (!primaryWallet || !componentUnits || !chain || !userWallet) return;
+    try {
+      const walletClient = primaryWallet.getWalletClient();
+
+      // Loop through each token position in componentUnits[0]
+      for (let i = 0; i < componentUnits[0].length; i++) {
+        const tokenAddress = componentUnits[0][i] as `0x${string}`;
+        const tokenAmount = componentUnits[1][i];
+
+        // Approve the token
+        await walletClient.writeContract({
+          address: tokenAddress,
+          abi: Erc20 as Abi,
+          functionName: "approve",
+          args: [basicIssuanceModuleAddress, tokenAmount],
+          chain,
+          account: userWallet as Address,
+        });
+        console.log(
+          `Approval successful for token at position ${i}:`,
+          tokenAddress
+        );
+      }
+    } catch (error) {
+      console.error("Error in batch approval:", error);
+    }
+  };
+
+  const handleBatchApproveAndIssue = async () => {
+    if (!primaryWallet || !componentUnits || !chain || !userWallet) return;
+
+    try {
+      const walletClient = primaryWallet.getWalletClient();
+
+      // Approve each token sequentially
+      for (let i = 0; i < componentUnits[0].length; i++) {
+        const tokenAddress = componentUnits[0][i] as `0x${string}`;
+        const tokenAmount = componentUnits[1][i];
+
+        // Approve each token
+        await walletClient.writeContract({
+          address: tokenAddress,
+          abi: Erc20 as Abi,
+          functionName: "approve",
+          args: [basicIssuanceModuleAddress, tokenAmount],
+          chain,
+          account: userWallet as Address,
+        });
+        console.log(
+          `Approval successful for token at position ${i}:`,
+          tokenAddress
+        );
+      }
+
+      // After all tokens are approved, proceed with issuing the tokens
+      const issueHash = await walletClient.writeContract({
+        address: basicIssuanceModuleAddress,
+        abi: BasicIssuanceModule as Abi,
+        functionName: "issue",
+        args: [address, parseEther(`${tokenAmount}`), userWallet],
+        chain,
+        account: userWallet as Address,
+      });
+      console.log("Issue transaction hash:", issueHash);
+    } catch (error) {
+      console.error("Error in batch approve and issue:", error);
+    }
+  };
+
   const getDistributionDisplay = () => {
     if (!componentUnits || !tokenDecimals || !tokenNames) return [];
 
@@ -363,59 +434,6 @@ const SetDetails: React.FC<SetDetailsProps> = () => {
       const quantity = parseFloat(formatUnits(unit, decimals));
       return `${name} - ${quantity.toFixed(0)}`;
     });
-  };
-
-  const handleBatchApprove = async () => {
-    if (!primaryWallet || !componentUnits || !chain || !userWallet) return;
-
-    const approvalCalls = componentUnits[0].map((tokenAddress, index) => ({
-      target: tokenAddress,
-      callData: encodeFunctionData({
-        abi: Erc20,
-        functionName: "approve",
-        args: [basicIssuanceModuleAddress, componentUnits[1][index]],
-      }),
-    }));
-
-    try {
-      const walletClient = primaryWallet.getWalletClient();
-      const hash = await walletClient.writeContract({
-        address: multicallAddress,
-        abi: [
-          {
-            inputs: [
-              {
-                internalType: "bytes[]",
-                name: "data",
-                type: "bytes[]",
-              },
-            ],
-            name: "aggregate",
-            outputs: [
-              {
-                internalType: "uint256",
-                name: "blockNumber",
-                type: "uint256",
-              },
-              {
-                internalType: "bytes[]",
-                name: "returnData",
-                type: "bytes[]",
-              },
-            ],
-            stateMutability: "nonpayable",
-            type: "function",
-          },
-        ] as const,
-        functionName: "aggregate",
-        args: [approvalCalls.map((call) => call.callData)],
-        chain,
-        account: userWallet as Address,
-      });
-      console.log("Batch approve hash:", hash);
-    } catch (error) {
-      console.error("Error batch approving:", error);
-    }
   };
 
   return (
@@ -585,6 +603,14 @@ const SetDetails: React.FC<SetDetailsProps> = () => {
                   style={{ backgroundColor: COLORS[2] }}
                 >
                   Issue
+                </button>
+                <button
+                  onClick={handleBatchApproveAndIssue}
+                  disabled={!isConnected}
+                  className="px-4 py-2 text-white rounded-lg hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{ backgroundColor: COLORS[4] }}
+                >
+                  Batch Approve and Issue
                 </button>
                 <button
                   onClick={handleRedeem}
