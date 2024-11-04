@@ -5,6 +5,7 @@ import IndexChart from "@/components/analytics/IndexChart";
 import IndexDetails from "@/components/analytics/IndexDetails";
 import IndexDistribution from "@/components/analytics/IndexDistribution";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 
 import {
   usePublicClient,
@@ -57,9 +58,7 @@ type Distribution = {
 const ProductInfo: React.FC = () => {
   const { chain, address, isConnected } = useAccount();
   const [primaryWallet] = useWallets();
-  const { indexAddress } = useParams<{ indexAddress: `0x${string}` }>(); // Get the address from the URL
-  const [tokenAmount, setTokenAmount] = useState<number>(1);
-
+  const { indexAddress } = useParams<{ indexAddress: `0x${string}` }>();
   const [chartData, setChartData] = useState<DataPoint[]>([]);
   const [priceData, setPriceData] = useState<PriceData | null>(null);
   const [tokenData, setTokenData] = useState<TokenData | null>(null);
@@ -70,10 +69,6 @@ const ProductInfo: React.FC = () => {
   // Available time ranges for easy scalability
   const timeRanges = ["24h-ts", "7d-ts", "1m-ts", "3m-ts", "6m-ts"] as const;
 
-  const basicIssuanceAddress = process.env
-    .NEXT_PUBLIC_BASIC_ISSUANCE_MODULE as Address;
-
-  // Fetch chart data from advanced-info.json and token data from basic-info.json
   useEffect(() => {
     const fetchChartData = async () => {
       try {
@@ -107,58 +102,9 @@ const ProductInfo: React.FC = () => {
     }
   }, [selectedRange, priceData]);
 
-  const handleIssue = async () => {
-    if (!primaryWallet || !isConnected || !address) return;
-
-    try {
-      const walletClient = primaryWallet.getWalletClient();
-      const transaction = await walletClient.writeContract({
-        address: basicIssuanceAddress,
-        abi: BasicIssuanceModule as Abi,
-        functionName: "issue",
-        args: [indexAddress, parseUnits(`${tokenAmount}`, 18), address],
-        account: address as Address,
-        chain: chain,
-      });
-      console.log("Issue transaction hash:", transaction);
-    } catch (error) {
-      console.error("Issue failed:", error);
-    }
-  };
-
-  const handleRedeem = async () => {
-    if (!primaryWallet || !isConnected || !address) return;
-
-    try {
-      const walletClient = primaryWallet.getWalletClient();
-      const transaction = await walletClient.writeContract({
-        address: basicIssuanceAddress,
-        abi: BasicIssuanceModule as Abi,
-        functionName: "redeem",
-        args: [indexAddress, parseUnits(`${tokenAmount}`, 18), address],
-        account: address as Address,
-        chain: chain,
-      });
-      console.log("Redeem transaction hash:", transaction);
-    } catch (error) {
-      console.error("Redeem failed:", error);
-    }
-  };
-
-  const handleInputChangeAmount = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const { value } = event.target;
-    setTokenAmount(value === null ? 0 : parseFloat(value));
-  };
-
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 py-16 px-2 sm:px-4 md:px-6 lg:px-8">
-      {" "}
-      {/* Tighter padding */}
       <div className="flex flex-col items-center mb-12 space-y-8 md:space-y-10 max-w-screen-xl w-full">
-        {" "}
-        {/* Reduced space-y */}
         <h2 className="text-[#364647] max-w-3xl text-center text-3xl font-bold md:text-4xl lg:text-5xl lg:leading-tight">
           Knowledge is leverage. <br /> Leverage maximizes returns.
         </h2>
@@ -166,7 +112,14 @@ const ProductInfo: React.FC = () => {
           Gain deep insights into index metrics and trends to leverage smarter,
           data-driven decisions.
         </h3>
+        <Link
+          href={`/products/${indexAddress}/trade`}
+          className="bg-blue-500 hover:bg-blue-400 text-white rounded-lg px-11 py-3"
+        >
+          Trade Now
+        </Link>
       </div>
+
       {/* First row: Chart */}
       <div className="w-full max-w-6xl mb-8">
         <div className="w-full p-6 bg-white rounded-lg shadow-lg">
@@ -197,6 +150,7 @@ const ProductInfo: React.FC = () => {
           )}
         </div>
       </div>
+
       {/* Second row: Details and Distribution */}
       <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-8">
         {tokenData && (
@@ -209,26 +163,6 @@ const ProductInfo: React.FC = () => {
             <IndexDistribution tokenData={tokenData} />
           </div>
         )}
-      </div>
-      <div className="flex justify-center space-x-4 my-4">
-        <input
-          type="number"
-          placeholder="Amount"
-          value={tokenAmount}
-          onChange={handleInputChangeAmount}
-        />
-        <button
-          onClick={handleIssue}
-          className="px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700"
-        >
-          Issue
-        </button>
-        <button
-          onClick={handleRedeem}
-          className="px-4 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700"
-        >
-          Redeem
-        </button>
       </div>
     </div>
   );

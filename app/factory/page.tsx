@@ -142,7 +142,7 @@ const Factory: React.FC = () => {
   );
 
   return (
-    <div className="p-8 bg-white shadow-lg rounded-xl max-w-2xl mx-auto mt-10">
+    <div className="p-8 bg-white shadow-lg rounded-xl max-w-2xl mx-auto mt-10 border border-gray-200">
       <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">
         Create Your Index
       </h1>

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useAccount, usePublicClient } from "@particle-network/connectkit";
 import { Abi, Address } from "viem";
-import { Controller } from "@/abis";
+import { Controller, SetToken } from "@/abis";
 import Link from "next/link";
 
 interface IndexesProps {
@@ -12,19 +12,18 @@ interface IndexesProps {
 
 const Indexes: React.FC<IndexesProps> = ({ status }) => {
   const controllerAddress = process.env.NEXT_PUBLIC_CONTROLLER as Address;
-  if (!controllerAddress) {
-    throw new Error("Missing contract address");
-  }
+  if (!controllerAddress) throw new Error("Missing contract address");
+
   const publicClient = usePublicClient();
   const { address, isConnected } = useAccount();
 
-  const [sets, setSets] = useState<Address[]>([]);
+  const [managedSets, setManagedSets] = useState<Address[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchSets = async () => {
-      if (!publicClient || !controllerAddress) return;
+      if (!publicClient || !controllerAddress || !address) return;
       setLoading(true);
 
       try {
@@ -33,7 +32,27 @@ const Indexes: React.FC<IndexesProps> = ({ status }) => {
           abi: Controller as Abi,
           functionName: "getSets",
         });
-        setSets(result as Address[]);
+        const allSets = result as Address[];
+
+        const managerCheckPromises = allSets.map(async (setAddress) => {
+          try {
+            const manager = await publicClient.readContract({
+              address: setAddress,
+              abi: SetToken as Abi,
+              functionName: "manager",
+            });
+            return manager === address ? setAddress : null;
+          } catch (err) {
+            console.error(`Error fetching manager for set ${setAddress}`, err);
+            return null;
+          }
+        });
+
+        const setsManagedByUser = (
+          await Promise.all(managerCheckPromises)
+        ).filter((set) => set !== null) as Address[];
+
+        setManagedSets(setsManagedByUser);
       } catch (err) {
         setError("Error fetching sets");
         console.error(err);
@@ -45,7 +64,7 @@ const Indexes: React.FC<IndexesProps> = ({ status }) => {
     if (isConnected) {
       fetchSets();
     }
-  }, [isConnected, publicClient, controllerAddress]);
+  }, [isConnected, publicClient, controllerAddress, address]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -73,50 +92,46 @@ const Indexes: React.FC<IndexesProps> = ({ status }) => {
           {!isConnected ? (
             <div className="rounded-lg bg-yellow-50 p-4">
               <div className="flex">
-                <div className="flex-shrink-0">
-                  <svg
-                    className="h-5 w-5 text-yellow-400"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M8.485 2.495c.873-1.562 3.157-1.562 4.03 0l6.28 11.225c.87 1.556-.237 3.472-2.015 3.472H4.22c-1.778 0-2.885-1.916-2.015-3.472l6.28-11.225zM10 5a1 1 0 0 1 1 1v4a1 1 0 1 1-2 0V6a1 1 0 0 1 1-1zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"
-                    />
-                  </svg>
-                </div>
+                <svg
+                  className="h-5 w-5 text-yellow-400"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M8.485 2.495c.873-1.562 3.157-1.562 4.03 0l6.28 11.225c.87 1.556-.237 3.472-2.015 3.472H4.22c-1.778 0-2.885-1.916-2.015-3.472l6.28-11.225zM10 5a1 1 0 0 1 1 1v4a1 1 0 1 1-2 0V6a1 1 0 0 1 1-1zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"
+                  />
+                </svg>
                 <div className="ml-3">
                   <h3 className="text-sm font-medium text-yellow-800">
                     Connection Required
                   </h3>
-                  <div className="mt-2 text-sm text-yellow-700">
-                    <p>Please connect your wallet to view deployed indexes.</p>
-                  </div>
+                  <p className="mt-2 text-sm text-yellow-700">
+                    Please connect your wallet to view deployed indexes.
+                  </p>
                 </div>
               </div>
             </div>
           ) : (
             <div className="rounded-lg bg-green-50 p-4">
               <div className="flex">
-                <div className="flex-shrink-0">
-                  <svg
-                    className="h-5 w-5 text-green-400"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm3.707-9.293a1 1 0 0 0-1.414-1.414L9 10.586 7.707 9.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4z"
-                    />
-                  </svg>
-                </div>
+                <svg
+                  className="h-5 w-5 text-green-400"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm3.707-9.293a1 1 0 0 0-1.414-1.414L9 10.586 7.707 9.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4z"
+                  />
+                </svg>
                 <div className="ml-3">
                   <h3 className="text-sm font-medium text-green-800">
                     Connected Successfully
                   </h3>
-                  <div className="mt-2 text-sm text-green-700">
-                    <p className="font-mono">{address}</p>
-                  </div>
+                  <p className="mt-2 text-sm text-green-700 font-mono">
+                    {address}
+                  </p>
                 </div>
               </div>
             </div>
@@ -134,41 +149,37 @@ const Indexes: React.FC<IndexesProps> = ({ status }) => {
         {error && (
           <div className="rounded-lg bg-red-50 p-4">
             <div className="flex">
-              <div className="flex-shrink-0">
-                <svg
-                  className="h-5 w-5 text-red-400"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM8.707 7.293a1 1 0 0 0-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 1 0 1.414 1.414L10 11.414l1.293 1.293a1 1 0 0 0 1.414-1.414L11.414 10l1.293-1.293a1 1 0 0 0-1.414-1.414L10 8.586 8.707 7.293z"
-                  />
-                </svg>
-              </div>
+              <svg
+                className="h-5 w-5 text-red-400"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM8.707 7.293a1 1 0 0 0-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 1 0 1.414 1.414L10 11.414l1.293 1.293a1 1 0 0 0 1.414-1.414L11.414 10l1.293-1.293a1 1 0 0 0-1.414-1.414L10 8.586 8.707 7.293z"
+                />
+              </svg>
               <div className="ml-3">
                 <h3 className="text-sm font-medium text-red-800">
                   Error Loading Indexes
                 </h3>
-                <div className="mt-2 text-sm text-red-700">
-                  <p>{error}</p>
-                </div>
+                <p className="mt-2 text-sm text-red-700">{error}</p>
               </div>
             </div>
           </div>
         )}
 
         {/* Indexes Grid */}
-        {isConnected && !loading && !error && (
+        {isConnected && !loading && !error && managedSets.length > 0 && (
           <div className="space-y-4">
-            {sets.map((set, index) => (
+            {managedSets.map((set, index) => (
               <Link href={`/indexes/${set}`} key={set} className="block group">
                 <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-200">
                   <div className="p-4 flex items-center justify-between">
                     <div className="flex items-center space-x-4 flex-1">
                       <div className="bg-blue-50 rounded-full px-3 py-1 shrink-0">
                         <span className="text-sm font-medium text-blue-700">
-                          Index #{index + 1}
+                          Managed Index #{index + 1}
                         </span>
                       </div>
                       <div className="font-mono text-sm text-gray-600 truncate">
@@ -195,8 +206,9 @@ const Indexes: React.FC<IndexesProps> = ({ status }) => {
             ))}
           </div>
         )}
+
         {/* Empty State */}
-        {isConnected && !loading && !error && sets.length === 0 && (
+        {isConnected && !loading && !error && managedSets.length === 0 && (
           <div className="text-center py-12">
             <svg
               className="mx-auto h-12 w-12 text-gray-400"
