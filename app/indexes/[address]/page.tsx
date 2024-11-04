@@ -78,6 +78,15 @@ const SetDetails: React.FC<SetDetailsProps> = () => {
   const multicallAddress = process.env
     .NEXT_PUBLIC_MULTICALL_ADDRESS as `0x${string}`;
 
+  const COLORS = [
+    "#4F46E5",
+    "#3B82F6",
+    "#10B981",
+    "#F59E0B",
+    "#EF4444",
+    "#A855F7",
+  ];
+
   const keyMapping: Record<number, string> = {
     0: "name",
     1: "symbol",
@@ -345,6 +354,17 @@ const SetDetails: React.FC<SetDetailsProps> = () => {
     }
   };
 
+  const getDistributionDisplay = () => {
+    if (!componentUnits || !tokenDecimals || !tokenNames) return [];
+
+    return componentUnits[1].map((unit, index) => {
+      const decimals = tokenDecimals[index]?.result || 1;
+      const name = tokenNames[index]?.result || "N/A";
+      const quantity = parseFloat(formatUnits(unit, decimals));
+      return `${name} - ${quantity.toFixed(0)}`;
+    });
+  };
+
   const handleBatchApprove = async () => {
     if (!primaryWallet || !componentUnits || !chain || !userWallet) return;
 
@@ -403,7 +423,9 @@ const SetDetails: React.FC<SetDetailsProps> = () => {
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header Section */}
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Index Information</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            Index Information
+          </h1>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4 text-sm">
             <div className="bg-gray-50 p-3 rounded-lg">
               <span className="text-gray-600">Status</span>
@@ -435,14 +457,16 @@ const SetDetails: React.FC<SetDetailsProps> = () => {
             </div>
           </div>
         </div>
-  
+
         {/* Main Info Card */}
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
           <div className="space-y-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between pb-4 border-b border-gray-200">
               <div>
                 <h2 className="text-xl font-semibold text-gray-900">
-                  {formattedData ? String(formattedData.name.result) : "Loading..."}
+                  {formattedData
+                    ? String(formattedData.name.result)
+                    : "Loading..."}
                 </h2>
                 <p className="text-gray-600 mt-1">
                   {formattedData ? String(formattedData.symbol.result) : ""}
@@ -462,34 +486,39 @@ const SetDetails: React.FC<SetDetailsProps> = () => {
                 </div>
               </div>
             </div>
-  
+
             <div className="space-y-2">
-              <div className="text-sm text-gray-600">Set Address</div>
+              <div className="text-sm text-gray-600">Index Address</div>
               <div className="font-mono text-sm bg-gray-50 p-3 rounded-lg break-all">
                 {address}
               </div>
-              <div className="text-sm text-gray-600">Set Manager</div>
+              <div className="text-sm text-gray-600">Index Manager</div>
               <div className="font-mono text-sm bg-gray-50 p-3 rounded-lg break-all">
                 {formattedData ? formattedData.manager.result : "N/A"}
               </div>
             </div>
-  
+
             <div className="space-y-2">
-              <div className="text-sm text-gray-600">Underlying Assets</div>
+              <div className="text-sm text-gray-600">
+                Underlying Assets Distribution
+              </div>
               <div className="flex flex-wrap gap-2">
-                {tokenNames.map((name, index) => (
+                {getDistributionDisplay().map((distribution, index) => (
                   <span
                     key={index}
-                    className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-medium"
+                    className="px-3 py-1 text-white rounded-full text-sm font-medium"
+                    style={{
+                      backgroundColor: COLORS[index % COLORS.length],
+                    }}
                   >
-                    {name.result || "N/A"}
+                    {distribution}
                   </span>
                 ))}
               </div>
             </div>
           </div>
         </div>
-  
+
         {/* Action Section */}
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
           {formattedData && formattedData.isInitialized.result === false ? (
@@ -518,7 +547,7 @@ const SetDetails: React.FC<SetDetailsProps> = () => {
                   placeholder="Enter amount"
                 />
               </div>
-  
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Token Position for Approval
@@ -531,33 +560,37 @@ const SetDetails: React.FC<SetDetailsProps> = () => {
                   placeholder="Enter position"
                 />
               </div>
-  
+
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <button
                   onClick={handleBatchApprove}
                   disabled={!isConnected || !componentUnits}
-                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-4 py-2 text-white rounded-lg hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{ backgroundColor: COLORS[0] }}
                 >
                   Batch Approve
                 </button>
                 <button
                   onClick={() => handleApprove(approvalPosition)}
                   disabled={!isConnected || !componentUnits}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-4 py-2 text-white rounded-lg hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{ backgroundColor: COLORS[1] }}
                 >
                   Approve
                 </button>
                 <button
                   onClick={handleIssue}
                   disabled={!isConnected}
-                  className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-4 py-2 text-white rounded-lg hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{ backgroundColor: COLORS[2] }}
                 >
                   Issue
                 </button>
                 <button
                   onClick={handleRedeem}
                   disabled={!isConnected}
-                  className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-4 py-2 text-white rounded-lg hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{ backgroundColor: COLORS[3] }}
                 >
                   Redeem
                 </button>
@@ -565,7 +598,7 @@ const SetDetails: React.FC<SetDetailsProps> = () => {
             </div>
           )}
         </div>
-  
+
         {/* Back Navigation */}
         <Link
           href="/indexes"

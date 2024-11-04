@@ -420,13 +420,6 @@
     "decimals": 18
   },
   {
-    "ticker": "WETH",
-    "img": "/src/assets/logos/WETH.png",
-    "name": "Binance-Peg WETH",
-    "address": "0x0000000000000000000000000000000000000000",
-    "decimals": 18
-  },
-  {
     "ticker": "BONK",
     "img": "/src/assets/logos/BONK.png",
     "name": "Bonk",
