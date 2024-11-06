@@ -42,6 +42,9 @@ const Header: React.FC = () => {
         <Link href="/profile" className={linkClass("/profile")}>
           My Profile
         </Link>
+        <Link href="/faucet" className={linkClass("/faucet")}>
+          Faucet
+        </Link>
       </div>
 
       {/* Right Section */}
