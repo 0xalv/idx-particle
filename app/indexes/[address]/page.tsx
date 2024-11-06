@@ -8,7 +8,12 @@ import {
   usePublicClient,
 } from "@particle-network/connectkit";
 import { useParams } from "next/navigation";
-import { Erc20, SetToken, BasicIssuanceModule, StreamingFeeModule } from "@/abis";
+import {
+  Erc20,
+  SetToken,
+  BasicIssuanceModule,
+  StreamingFeeModule,
+} from "@/abis";
 import {
   Abi,
   Address,
@@ -70,6 +75,9 @@ const SetDetails: React.FC<SetDetailsProps> = () => {
   const [isOwner, setIsOwner] = useState<boolean>(false);
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [streamingFeePercentage, setStreamingFeePercentage] =
+    useState<string>("2");
+  const MAX_FEE_PERCENTAGE = 10; // 10%
 
   const ADDRESS_ZERO = "0x0000000000000000000000000000000000000000";
   const basicIssuanceModuleAddress = process.env
@@ -274,8 +282,6 @@ const SetDetails: React.FC<SetDetailsProps> = () => {
     setTokenAmount(value === "" ? 0 : parseFloat(value));
   };
 
-
-
   const handleRedeem = async () => {
     if (!primaryWallet || !chain || !userWallet) return;
     try {
@@ -312,6 +318,15 @@ const SetDetails: React.FC<SetDetailsProps> = () => {
     }
   };
 
+  const handleStreamingFeeChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = parseFloat(event.target.value);
+    if (!isNaN(value) && value <= MAX_FEE_PERCENTAGE) {
+      setStreamingFeePercentage(event.target.value);
+    }
+  };
+
   const handleBatchInitialize = async () => {
     if (!primaryWallet || !chain || !userWallet) return;
 
@@ -337,8 +352,14 @@ const SetDetails: React.FC<SetDetailsProps> = () => {
       console.log("Initializing StreamingFeeModule...");
       const feeSettings = {
         feeRecipient: userWallet,
-        maxStreamingFeePercentage: parseUnits("0.1", 18), // 10%
-        streamingFeePercentage: parseUnits("0.02", 18), // 2%
+        maxStreamingFeePercentage: parseUnits(
+          (Number(MAX_FEE_PERCENTAGE) / 100).toString(),
+          18
+        ),
+        streamingFeePercentage: parseUnits(
+          (Number(streamingFeePercentage) / 100).toString(),
+          18
+        ),
         lastStreamingFeeTimestamp: BigInt(0),
       };
 
@@ -522,6 +543,24 @@ const SetDetails: React.FC<SetDetailsProps> = () => {
               <h2 className="text-lg font-medium text-gray-900 mb-4">
                 Module Initialization Required
               </h2>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Streaming Fee Percentage (max {MAX_FEE_PERCENTAGE}%)
+                </label>
+                <input
+                  type="number"
+                  value={streamingFeePercentage}
+                  onChange={handleStreamingFeeChange}
+                  min="0"
+                  max={MAX_FEE_PERCENTAGE}
+                  step="0.1"
+                  className="w-20 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Enter fee percentage"
+                />
+                <p className="mt-1 text-sm text-gray-500">
+                  Annual fee percentage charged on the index
+                </p>
+              </div>
               <button
                 onClick={handleBatchInitialize}
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"

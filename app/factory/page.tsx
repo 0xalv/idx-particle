@@ -40,11 +40,11 @@ const Factory: React.FC = () => {
   const streamingFeeModuleAddress = process.env
     .NEXT_PUBLIC_STREAMING_FEE_MODULE as `0x${string}`;
 
-  const PROTOCOL_FEE = 0; // 0% initially
-  const MAX_FEE = "0.1"; // 10% max fee
-  const INITIAL_FEE = "0.02"; // 2% annual fee
-
-  if (!setTokenCreatorAddress || !basicIssuanceModuleAddress || !streamingFeeModuleAddress) {
+  if (
+    !setTokenCreatorAddress ||
+    !basicIssuanceModuleAddress ||
+    !streamingFeeModuleAddress
+  ) {
     throw new Error("Missing contract address");
   }
 
