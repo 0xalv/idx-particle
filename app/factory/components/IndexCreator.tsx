@@ -309,15 +309,6 @@ export const IndexCreator: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       {renderContent()}
-      <Modal
-        open={isOpen}
-        footer={null}
-        onCancel={() => {
-          setIsOpen(false);
-          setSearchTerm("");
-        }}
-        title="Select a token"
-      ></Modal>
     </div>
   );
 };
