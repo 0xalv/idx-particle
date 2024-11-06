@@ -1,13 +1,13 @@
 [
   {
-    "ticker": "WBTC",
+    "ticker": "BTC",
     "img": "/src/assets/logos/BTC.png",
     "name": "Bitcoin",
     "address": "0x735461a1ce356c382396c45da35eff9a586282db",
     "decimals": 18
   },
   {
-    "ticker": "WETH",
+    "ticker": "ETH",
     "img": "/src/assets/logos/ETH.png",
     "name": "Ethereum",
     "address": "0x8858bd3ca0677e85cb72aa8fe6780b9c037d73eb",
