@@ -81,10 +81,11 @@ const config = createConfig({
       // TODO: replace it with your app metadata.
       metadata: {
         name: "IDX",
-        icon:
-          typeof window !== "undefined"
-            ? `${window.location.origin}/favicon.ico`
-            : "",
+        icon: "",
+        // icon:
+        //   typeof window !== "undefined"
+        //     ? `${window.location.origin}/favicon.ico`
+        //     : "",
         description: "A simple way of creating/buting crypto indexes.",
         url: typeof window !== "undefined" ? window.location.origin : "",
       },

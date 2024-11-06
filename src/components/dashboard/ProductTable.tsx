@@ -1,16 +1,7 @@
-"use client";
 
-import { useState } from "react";
 import products from "@/data/products.json";
 
 const ProductTable = () => {
-  // State to track the sorting direction (up or down)
-  const [isArrowDown, setIsArrowDown] = useState(false);
-
-  // Function to handle header click and toggle the arrow direction
-  const handleHeaderClick = () => {
-    setIsArrowDown(!isArrowDown); // Toggle the arrow direction
-  };
 
   return (
     <div className="px-2 pt-16 sm:px-4 md:px-8 md:pt-20 lg:px-12">
@@ -31,40 +22,23 @@ const ProductTable = () => {
         {/* Desktop Table */}
         <div className="bg-white border-gray-100 mt-8 w-full overflow-auto rounded-3xl border py-4 shadow-sm hidden md:flex flex-col">
           <div className="hidden justify-between py-6 md:flex">
-            <div
-              onClick={handleHeaderClick}
-              className="text-[#627171] hover:text-[#364647] min-w-[410px] cursor-pointer items-center px-6 text-left text-sm font-medium"
+          <div
+              className="text-[#627171] hover:text-[#364647] min-w-[410px] cursor-pointer items-center px-6 text-left text-sm font-medium group"
             >
               Index
-              {isArrowDown ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  aria-hidden="true"
-                  className="ml-1 inline-block h-4 w-4"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  aria-hidden="true"
-                  className="ml-1 inline-block h-4 w-4"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M9.47 6.47a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1-1.06 1.06L10 8.061 6.31 11.78a.75.75 0 1 1-1.06-1.06l4.25-4.25z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              )}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+                className="ml-1 inline-block h-4 w-4 transition-transform duration-200 group-hover:rotate-180"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+                  clipRule="evenodd"
+                />
+              </svg>
             </div>
             <div className="text-[#627171] hover:text-[#364647] min-w-[120px] text-center text-sm font-medium">
               Type

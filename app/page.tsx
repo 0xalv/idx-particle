@@ -1,5 +1,3 @@
-"use client";
-
 import ProductTable from "@/components/dashboard/ProductTable";
 
 const page = () => {
