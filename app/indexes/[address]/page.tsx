@@ -8,7 +8,7 @@ import {
   usePublicClient,
 } from "@particle-network/connectkit";
 import { useParams } from "next/navigation";
-import { Erc20, SetToken, BasicIssuanceModule } from "@/abis";
+import { Erc20, SetToken, BasicIssuanceModule, StreamingFeeModule } from "@/abis";
 import {
   Abi,
   Address,
@@ -76,7 +76,8 @@ const SetDetails: React.FC<SetDetailsProps> = () => {
     .NEXT_PUBLIC_BASIC_ISSUANCE_MODULE as `0x${string}`;
   const multicallAddress = process.env
     .NEXT_PUBLIC_MULTICALL_ADDRESS as `0x${string}`;
-
+  const streamingFeeModuleAddress = process.env
+    .NEXT_PUBLIC_STREAMING_FEE_MODULE as `0x${string}`;
   const COLORS = [
     "#4F46E5",
     "#3B82F6",
@@ -273,6 +274,26 @@ const SetDetails: React.FC<SetDetailsProps> = () => {
     setTokenAmount(value === "" ? 0 : parseFloat(value));
   };
 
+
+
+  const handleRedeem = async () => {
+    if (!primaryWallet || !chain || !userWallet) return;
+    try {
+      const walletClient = primaryWallet.getWalletClient();
+      const hash = await walletClient.writeContract({
+        address: basicIssuanceModuleAddress,
+        abi: BasicIssuanceModule as Abi,
+        functionName: "redeem",
+        args: [address, parseEther(`${tokenAmount}`), userWallet],
+        chain,
+        account: userWallet as Address,
+      });
+      console.log("Redeem hash:", hash);
+    } catch (error) {
+      console.error("Error redeeming tokens:", error);
+    }
+  };
+
   const handleInitialize = async () => {
     if (!primaryWallet || !chain || !userWallet) return;
     try {
@@ -291,21 +312,53 @@ const SetDetails: React.FC<SetDetailsProps> = () => {
     }
   };
 
-  const handleRedeem = async () => {
+  const handleBatchInitialize = async () => {
     if (!primaryWallet || !chain || !userWallet) return;
+
     try {
       const walletClient = primaryWallet.getWalletClient();
-      const hash = await walletClient.writeContract({
+
+      // Initialize BasicIssuanceModule
+      console.log("Initializing BasicIssuanceModule...");
+      const basicIssuanceHash = await walletClient.writeContract({
         address: basicIssuanceModuleAddress,
         abi: BasicIssuanceModule as Abi,
-        functionName: "redeem",
-        args: [address, parseEther(`${tokenAmount}`), userWallet],
+        functionName: "initialize",
+        args: [address, ADDRESS_ZERO],
         chain,
         account: userWallet as Address,
       });
-      console.log("Redeem hash:", hash);
+      console.log(
+        "BasicIssuanceModule initialization hash:",
+        basicIssuanceHash
+      );
+
+      // Initialize StreamingFeeModule
+      console.log("Initializing StreamingFeeModule...");
+      const feeSettings = {
+        feeRecipient: userWallet,
+        maxStreamingFeePercentage: parseUnits("0.1", 18), // 10%
+        streamingFeePercentage: parseUnits("0.02", 18), // 2%
+        lastStreamingFeeTimestamp: BigInt(0),
+      };
+
+      const streamingFeeHash = await walletClient.writeContract({
+        address: streamingFeeModuleAddress,
+        abi: StreamingFeeModule as Abi,
+        functionName: "initialize",
+        args: [address, feeSettings],
+        chain,
+        account: userWallet as Address,
+      });
+      console.log("StreamingFeeModule initialization hash:", streamingFeeHash);
+
+      return {
+        basicIssuanceHash,
+        streamingFeeHash,
+      };
     } catch (error) {
-      console.error("Error redeeming tokens:", error);
+      console.error("Error in batch initialize:", error);
+      throw error;
     }
   };
 
@@ -470,7 +523,7 @@ const SetDetails: React.FC<SetDetailsProps> = () => {
                 Module Initialization Required
               </h2>
               <button
-                onClick={handleInitialize}
+                onClick={handleBatchInitialize}
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
                 Initialize Module

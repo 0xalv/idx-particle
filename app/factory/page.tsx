@@ -37,8 +37,14 @@ const Factory: React.FC = () => {
     .NEXT_PUBLIC_SET_TOKEN_CREATOR as `0x${string}`;
   const basicIssuanceModuleAddress = process.env
     .NEXT_PUBLIC_BASIC_ISSUANCE_MODULE as `0x${string}`;
+  const streamingFeeModuleAddress = process.env
+    .NEXT_PUBLIC_STREAMING_FEE_MODULE as `0x${string}`;
 
-  if (!setTokenCreatorAddress || !basicIssuanceModuleAddress) {
+  const PROTOCOL_FEE = 0; // 0% initially
+  const MAX_FEE = "0.1"; // 10% max fee
+  const INITIAL_FEE = "0.02"; // 2% annual fee
+
+  if (!setTokenCreatorAddress || !basicIssuanceModuleAddress || !streamingFeeModuleAddress) {
     throw new Error("Missing contract address");
   }
 
@@ -107,7 +113,7 @@ const Factory: React.FC = () => {
       const createIndexArgs = [
         componentAddresses,
         componentUnits,
-        [basicIssuanceModuleAddress],
+        [basicIssuanceModuleAddress, streamingFeeModuleAddress], // Modules [issue, fee]
         address as Address,
         indexName,
         indexSymbol,
