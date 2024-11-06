@@ -76,7 +76,11 @@ const SetDetails: React.FC<SetDetailsProps> = () => {
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [streamingFeePercentage, setStreamingFeePercentage] =
-    useState<string>("2");
+    useState<string>("2"); // this is the fee set by the user in hte fee input
+  const [streamingFeeIndex, setStreamingFeeIndex] = useState<string | null>(
+    null
+  ); // this is the fee obtained directly from the index, using the StreamingFeeModule
+
   const MAX_FEE_PERCENTAGE = 10; // 10%
 
   const ADDRESS_ZERO = "0x0000000000000000000000000000000000000000";
@@ -282,6 +286,27 @@ const SetDetails: React.FC<SetDetailsProps> = () => {
     setTokenAmount(value === "" ? 0 : parseFloat(value));
   };
 
+  // fetch streaming fee
+  useEffect(() => {
+    const fetchStreamingFee = async () => {
+      if (!publicClient || !address || !streamingFeeModuleAddress) return;
+
+      try {
+        const fee = (await publicClient.readContract({
+          address: streamingFeeModuleAddress,
+          abi: StreamingFeeModule,
+          functionName: "feeStates",
+          args: [address],
+        })) as [bigint, bigint, bigint, bigint];
+        setStreamingFeeIndex(formatUnits(fee[2], 16));
+      } catch (err) {
+        console.error("Error fetching streaming fee:", err);
+      }
+    };
+
+    fetchStreamingFee();
+  }, [publicClient, address, streamingFeeModuleAddress]);
+
   const handleRedeem = async () => {
     if (!primaryWallet || !chain || !userWallet) return;
     try {
@@ -300,6 +325,7 @@ const SetDetails: React.FC<SetDetailsProps> = () => {
     }
   };
 
+  // For initializing the basicIssuanceModule without the streamingFeesModule
   const handleInitialize = async () => {
     if (!primaryWallet || !chain || !userWallet) return;
     try {
@@ -321,9 +347,12 @@ const SetDetails: React.FC<SetDetailsProps> = () => {
   const handleStreamingFeeChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const value = parseFloat(event.target.value);
-    if (!isNaN(value) && value <= MAX_FEE_PERCENTAGE) {
-      setStreamingFeePercentage(event.target.value);
+    const value = event.target.value;
+    const numericValue = parseFloat(value);
+    if (!isNaN(numericValue) && numericValue <= MAX_FEE_PERCENTAGE) {
+      setStreamingFeePercentage(value); // Set the raw input value without forcing decimals
+    } else if (value === "") {
+      setStreamingFeePercentage(""); // Allow clearing the input
     }
   };
 
@@ -513,6 +542,15 @@ const SetDetails: React.FC<SetDetailsProps> = () => {
               <div className="font-mono text-sm bg-gray-50 p-3 rounded-lg break-all">
                 {formattedData ? formattedData.manager.result : "N/A"}
               </div>
+              <div className="text-sm text-gray-600">Index Streaming Fee</div>
+              <div
+                className="inline-flex px-3 py-1 text-white rounded-full text-sm font-medium"
+                style={{ backgroundColor: COLORS[2] }}
+              >
+                {streamingFeeIndex
+                  ? `${parseFloat(streamingFeeIndex).toFixed(2)}%`
+                  : "Loading..."}
+              </div>
             </div>
 
             <div className="space-y-2">
@@ -551,12 +589,21 @@ const SetDetails: React.FC<SetDetailsProps> = () => {
                   type="number"
                   value={streamingFeePercentage}
                   onChange={handleStreamingFeeChange}
+                  onBlur={() => {
+                    // Format to two decimals on blur if the input is not empty
+                    if (streamingFeePercentage) {
+                      setStreamingFeePercentage(
+                        parseFloat(streamingFeePercentage).toFixed(2)
+                      );
+                    }
+                  }}
                   min="0"
                   max={MAX_FEE_PERCENTAGE}
-                  step="0.1"
+                  step="0.01"
                   className="w-20 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Enter fee percentage"
                 />
+
                 <p className="mt-1 text-sm text-gray-500">
                   Annual fee percentage charged on the index
                 </p>
