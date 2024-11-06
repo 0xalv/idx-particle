@@ -1,12 +1,18 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import React, { useState } from "react";
-import { Modal } from "antd";
-import { DownOutlined } from "@ant-design/icons";
+
+import DownOutlined from "@ant-design/icons/DownOutlined";
 import tokenList from "@/data/tokenList.json";
 import { Abi, parseUnits, Address } from "viem";
 import { useAccount, useWallets } from "@particle-network/connectkit";
 import { SetTokenCreator } from "@/abis"; // Import your ABI file here
+
+const Modal = dynamic(() => import("antd/lib/modal"), {
+  loading: () => <p>Loading...</p>,
+  ssr: false,
+});
 
 interface Token {
   ticker: string;
@@ -306,9 +312,5 @@ export const IndexCreator: React.FC = () => {
     );
   };
 
-  return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      {renderContent()}
-    </div>
-  );
+  return <div className="min-h-screen bg-gray-50 py-8">{renderContent()}</div>;
 };
