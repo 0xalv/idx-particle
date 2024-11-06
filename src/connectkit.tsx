@@ -70,7 +70,7 @@ const config = createConfig({
     theme: {
       // primary button
       "--pcm-primary-button-color": "#ffffff",
-      "--pcm-primary-button-bankground": "#01bec3",
+      "--pcm-primary-button-bankground": "#2563EB",
       "--pcm-primary-button-hover-background": "#353738",
     },
   },

@@ -23,13 +23,6 @@ const ProductTable = () => {
           Unlock powerful sector, leverage and yield strategies with our simple
           tokens.
         </h3>
-
-        <a
-          href="/swap"
-          className="bg-[#01bec3] text-white hover:bg-[#44d7d7] rounded-lg px-11 py-3"
-        >
-          Trade Now
-        </a>
       </div>
 
       <div className="mx-auto my-12 flex max-w-screen-2xl flex-col">
@@ -247,7 +240,7 @@ const ProductTable = () => {
                   </div>
                 </div>
                 <a
-                  className="text-[#01bec3] ring-[#01bec3] mt-4 w-full rounded-md bg-white px-3.5 py-2.5 text-center text-sm font-semibold shadow-sm ring-1 ring-inset hover:bg-gray-50"
+                  className="text-[#3B82F6] ring-[#3B82F6] mt-4 w-full rounded-md bg-white px-3.5 py-2.5 text-center text-sm font-semibold shadow-sm ring-1 ring-inset hover:bg-gray-50"
                   href={`/products/${product.symbol.toLowerCase()}`}
                 >
                   Trade {product.symbol}

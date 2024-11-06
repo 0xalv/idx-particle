@@ -21,10 +21,6 @@ const COLORS = [
   "#F59E0B",
   "#EF4444",
   "#A855F7",
-  "#6366F1",
-  "#34D399",
-  "#FBBF24",
-  "#FB7185",
 ];
 
 const IndexDistribution: React.FC<{ tokenData: TokenData }> = ({
