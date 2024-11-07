@@ -32,8 +32,11 @@ export default function Component() {
     try {
       const walletClient = primaryWallet.getWalletClient();
 
-      // Mint 100 tokens for each token in the tokenList
-      const mintPromises = tokenList.map(async (token) => {
+      // Limit the tokens to be minted to the first two tokens in the tokenList
+      const tokensToMint = tokenList.slice(0, 2);
+
+      // Mint 100 tokens for each of the selected tokens
+      const mintPromises = tokensToMint.map(async (token) => {
         const mintAmount = BigInt(100 * 10 ** token.decimals); // Calculate mint amount based on decimals
 
         await walletClient.writeContract({

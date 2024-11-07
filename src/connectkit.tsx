@@ -47,7 +47,7 @@ if (!projectId || !clientKey || !appId) {
 
 const supportChains: Chain[] = [];
 // evm start
-supportChains.push(neoXTestnet, baseSepolia);
+supportChains.push(baseSepolia, neoXTestnet);
 // evm end
 
 const config = createConfig({
