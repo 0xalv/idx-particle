@@ -89,14 +89,13 @@ export default function Component() {
       console.log(klaster);
 
       const sendUSDC = rawTx({
-        data: createErc20TransferData({
-          to: "0x036CbD53842c5426634e7929541eC2318f3dCF7e" as `0x${string}`,
-          amount: 100,
-          decimals: 18,
-        }),
-        to: address as Address,
         gasLimit: 90000n,
-        value: parseUnits("0.2", 6),
+        to: "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+        data: encodeFunctionData({
+          abi: Erc20v2,
+          functionName: "transfer",
+          args: [address, 10*10**6],
+        }),
       });
 
       console.log("Add: ", address);
