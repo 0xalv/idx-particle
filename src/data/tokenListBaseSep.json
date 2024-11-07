@@ -1,0 +1,58 @@
+[
+  {
+    "ticker": "WBTC",
+    "img": "/src/assets/logos/BTC.png",
+    "name": "Wrapped Bitcoin",
+    "address": "0x54E18fa639d8D9a0A5686Ae1570C4f07234f3bA4",
+    "decimals": 8
+  },
+  {
+    "ticker": "WETH",
+    "img": "/src/assets/logos/ETH.png",
+    "name": "Wrapped Ethereum",
+    "address": "0x1599C83aaa685Ec033EB91a0B8758FB47a3377b1",
+    "decimals": 18
+  },
+  {
+    "ticker": "USDT",
+    "img": "/src/assets/logos/USDT.png",
+    "name": "Tether",
+    "address": "0x6fdE724344917FD1CB3BA970AB2BE0ba12aB2fC6",
+    "decimals": 6
+  },
+  {
+    "ticker": "ARB",
+    "img": "/src/assets/logos/ARB.png",
+    "name": "Arbitrum",
+    "address": "0xfffDBe748Cb9fa628947633Bc16A30c630BDd999",
+    "decimals": 18
+  },
+  {
+    "ticker": "UNI",
+    "img": "/src/assets/logos/UNI.png",
+    "name": "Uniswap",
+    "address": "0x8951299547375f45A0B1D139Dc852bc5Df6612c5",
+    "decimals": 18
+  },
+  {
+    "ticker": "AAVE",
+    "img": "/src/assets/logos/AAVE.png",
+    "name": "Aave",
+    "address": "0x9079d7e4D29230683115Bba7280E12f795bbB17A",
+    "decimals": 18
+  },
+  {
+    "ticker": "FIL",
+    "img": "/src/assets/logos/FIL.png",
+    "name": "Filecoin",
+    "address": "0x5a1339B5fBC6353A7466139c9592Af3D2192cCAA",
+    "decimals": 18
+  },
+  {
+    "ticker": "LINK",
+    "img": "/src/assets/logos/LINK.png",
+    "name": "Chainlink",
+    "address": "0x647cb2087d65C590cEDCbdA996292BCC2b50955D",
+    "decimals": 18
+  }
+]

@@ -4,10 +4,10 @@ import dynamic from "next/dynamic";
 import React, { useState } from "react";
 
 import DownOutlined from "@ant-design/icons/DownOutlined";
-import tokenList from "@/data/tokenList.json";
+import tokenList from "@/data/tokenListBaseSep.json";
 import { Abi, parseUnits, Address } from "viem";
 import { useAccount, useWallets } from "@particle-network/connectkit";
-import { SetTokenCreator } from "@/abis"; // Import your ABI file here
+import { SetTokenCreator } from "@/abis";
 
 const Modal = dynamic(() => import("antd/lib/modal"), {
   loading: () => <p>Loading...</p>,

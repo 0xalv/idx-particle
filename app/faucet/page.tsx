@@ -2,30 +2,62 @@
 
 import { useState } from "react";
 import Confetti from "react-confetti";
-
-const tokens = [
-  { ticker: "BTC", name: "Bitcoin" },
-  { ticker: "ETH", name: "Ethereum" },
-  { ticker: "BNB", name: "BNB" },
-  { ticker: "USDT", name: "Tether" },
-  { ticker: "SOL", name: "Solana" },
-  { ticker: "ADA", name: "Cardano" },
-  { ticker: "XRP", name: "Ripple" },
-  { ticker: "DOT", name: "Polkadot" },
-  { ticker: "DOGE", name: "Dogecoin" },
-  { ticker: "AVAX", name: "Avalanche" },
-];
+import tokenList from "@/data/tokenListBaseSep.json"; // Import token list
+import { useAccount, useWallets } from "@particle-network/connectkit"; // Import wallet handling
+import { Erc20v2 } from "@/abis"; // Assuming this is the correct path for the ERC20 ABI
+import { Abi, Address } from "viem";
 
 export default function Component() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [mintedTokens, setMintedTokens] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const handleMint = () => {
+  const [primaryWallet] = useWallets(); // Get primary wallet
+  const { chain, address, isConnected } = useAccount(); // Get wallet connection state
+
+  const handleMint = async () => {
+    if (!isConnected) {
+      alert("Please connect your wallet.");
+      return;
+    }
+
+    if (!primaryWallet || !address) {
+      alert("Wallet is not available.");
+      return;
+    }
+
+    setLoading(true);
     setShowConfetti(true);
-    setMintedTokens(
-      tokens.map((token) => `You have received 100 ${token.ticker} tokens.`)
-    );
-    setTimeout(() => setShowConfetti(false), 5000);
+
+    try {
+      const walletClient = primaryWallet.getWalletClient();
+
+      // Mint 100 tokens for each token in the tokenList
+      const mintPromises = tokenList.map(async (token) => {
+        const mintAmount = BigInt(100 * 10 ** token.decimals); // Calculate mint amount based on decimals
+
+        await walletClient.writeContract({
+          address: token.address as `0x${string}`,
+          abi: Erc20v2 as Abi, // Assuming this is the correct ABI reference for ERC20
+          functionName: "mint",
+          args: [address, mintAmount],
+          chain: chain,
+          account: address as Address,
+        });
+
+        return `You have received 100 ${token.ticker} tokens.`;
+      });
+
+      const mintResults = await Promise.all(mintPromises);
+      setMintedTokens(mintResults);
+
+      setTimeout(() => setShowConfetti(false), 10000); // Hide confetti after 10 seconds
+    } catch (error) {
+      console.error("Minting failed:", error);
+      alert("Minting failed, please check the console for more details.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -41,9 +73,12 @@ export default function Component() {
         </h3>
         <button
           onClick={handleMint}
-          className="bg-blue-500 hover:bg-blue-400 text-white rounded-lg px-11 py-3 transition-colors"
+          disabled={loading}
+          className={`${
+            loading ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-400"
+          } text-white rounded-lg px-11 py-3 transition-colors`}
         >
-          Mint Tokens
+          {loading ? "Minting Tokens..." : "Mint Tokens"}
         </button>
       </div>
 
