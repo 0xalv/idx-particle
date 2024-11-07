@@ -10,7 +10,11 @@ import { EntryPosition, wallet } from "@particle-network/connectkit/wallet";
 // embedded wallet end
 
 // evm start
-import { baseSepolia, defineChain } from "@particle-network/connectkit/chains";
+import {
+  baseSepolia,
+  optimismSepolia,
+  defineChain,
+} from "@particle-network/connectkit/chains";
 
 const neoXTestnet = defineChain({
   id: 12227332,
@@ -47,7 +51,7 @@ if (!projectId || !clientKey || !appId) {
 
 const supportChains: Chain[] = [];
 // evm start
-supportChains.push(baseSepolia, neoXTestnet);
+supportChains.push(baseSepolia, optimismSepolia);
 // evm end
 
 const config = createConfig({

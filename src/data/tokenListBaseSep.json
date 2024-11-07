@@ -42,13 +42,6 @@
     "decimals": 18
   },
   {
-    "ticker": "FIL",
-    "img": "/src/assets/logos/FIL.png",
-    "name": "Filecoin",
-    "address": "0x5a1339B5fBC6353A7466139c9592Af3D2192cCAA",
-    "decimals": 18
-  },
-  {
     "ticker": "LINK",
     "img": "/src/assets/logos/LINK.png",
     "name": "Chainlink",
