@@ -7,9 +7,17 @@ import {
   buildTokenMapping,
   deployment,
   buildItx,
-  rawTx,
   singleTx,
+  encodeBridgingOps,
+  buildMultichainReadonlyClient,
+  buildRpcInfo,
+  batchTx,
+  BridgePlugin,
+  rawTx,
 } from "klaster-sdk";
+
+import { getRoutes, RoutesRequest } from "@lifi/sdk";
+import { Hex } from "viem";
 
 import { useState } from "react";
 import Confetti from "react-confetti";
@@ -20,7 +28,49 @@ import { Abi, Address, parseUnits, encodeFunctionData } from "viem";
 import {
   baseSepolia,
   optimismSepolia,
+  arbitrumSepolia, //https://faucet.triangleplatform.com/arbitrum/sepolia
 } from "@particle-network/connectkit/chains";
+
+export const liFiBrigePlugin: BridgePlugin = async (data: any) => {
+  const routesRequest: RoutesRequest = {
+    fromChainId: data.sourceChainId,
+    toChainId: data.destinationChainId,
+    fromTokenAddress: data.sourceToken,
+    toTokenAddress: data.destinationToken,
+    fromAmount: data.amount.toString(),
+    options: {
+      order: "FASTEST",
+    },
+  };
+
+  const result = await getRoutes(routesRequest);
+  const route = result.routes.at(0);
+
+  if (!route) {
+    throw Error("...");
+  }
+
+  const routeSteps = route.steps.map((step) => {
+    if (!step.transactionRequest) {
+      throw Error("...");
+    }
+    const { to, gasLimit, data, value } = step.transactionRequest;
+    if (!to || !gasLimit || !data || !value) {
+      throw Error("...");
+    }
+    return rawTx({
+      to: to as Address,
+      gasLimit: BigInt(gasLimit),
+      data: data as Hex,
+      value: BigInt(value),
+    });
+  });
+
+  return {
+    receivedOnDestination: BigInt(route.toAmountMin),
+    txBatch: batchTx(data.sourceChainId, routeSteps),
+  };
+};
 
 export default function Component() {
   const [showConfetti, setShowConfetti] = useState(false);
@@ -83,10 +133,70 @@ export default function Component() {
       });
 
       const klasterBaseAddress = klaster.account.getAddress(baseSepolia.id);
-
       console.log("Klaster's Base Sepolia Address:", klasterBaseAddress);
 
+      const klasterOptimismAddress = klaster.account.getAddress(optimismSepolia.id);
+      console.log("Klaster's Optimism Sepolia Address:", klasterOptimismAddress);
+
+      const klasterArbitrumAddress = klaster.account.getAddress(arbitrumSepolia.id);
+      console.log("Klaster's Arbitrum Sepolia Address:", klasterArbitrumAddress);
+
       console.log(klaster);
+
+      const mcClient = buildMultichainReadonlyClient([
+        // buildRpcInfo(
+        //   optimismSepolia.id,
+        //   optimismSepolia.rpcUrls.default.http[0]
+        // ),
+        buildRpcInfo(baseSepolia.id, baseSepolia.rpcUrls.default.http[0]),
+        buildRpcInfo(arbitrumSepolia.id, arbitrumSepolia.rpcUrls.default.http[0]),
+      ]);
+
+      const mappingUSDC = buildTokenMapping([
+        // deployment(
+        //   optimismSepolia.id,
+        //   "0x5fd84259d66Cd46123540766Be93DFE6D43130D7"
+        // ),
+        deployment(
+          arbitrumSepolia.id,
+          "0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d"
+        ),
+        deployment(
+          baseSepolia.id,
+          "0x036CbD53842c5426634e7929541eC2318f3dCF7e"
+        ),
+      ]);
+
+      const uBalance = await mcClient.getUnifiedErc20Balance({
+        tokenMapping: mappingUSDC,
+        account: klaster.account,
+      });
+
+      console.log(uBalance);
+
+      // const bridgePluginParams: any = {
+      //   fromChainId: arbitrumSepolia.id,
+      //   toChainId: baseSepolia.id,
+      //   fromTokenAddress: "0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d",
+      //   toTokenAddress: "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+      //   fromAmount: data.amount.toString(),
+      //   options: {
+      //     order: "FASTEST",
+      //   },
+        
+      // }
+
+      // const bridgePluginResult = await liFiBrigePlugin(bridgePluginParams);
+
+      const bridgingOps = await encodeBridgingOps({
+        tokenMapping: mappingUSDC,
+        account: klaster.account,
+        amount: uBalance.balance - parseUnits("1", uBalance.decimals), // Don't send entire balance
+        bridgePlugin: liFiBrigePlugin,
+        client: mcClient,
+        destinationChainId: baseSepolia.id,
+        unifiedBalance: uBalance,
+      });
 
       const sendUSDC = rawTx({
         gasLimit: 90000n,
@@ -94,7 +204,7 @@ export default function Component() {
         data: encodeFunctionData({
           abi: Erc20v2,
           functionName: "transfer",
-          args: [address, 10*10**6],
+          args: [address, bridgingOps.totalReceivedOnDestination],
         }),
       });
 
@@ -102,7 +212,7 @@ export default function Component() {
 
       // Define the interchain transaction (iTx)
       const iTx = buildItx({
-        steps: [singleTx(baseSepolia.id, sendUSDC)],
+        steps: bridgingOps.steps.concat(singleTx(baseSepolia.id, sendUSDC)),
         feeTx: klaster.encodePaymentFee(baseSepolia.id, "USDC"),
       });
 
