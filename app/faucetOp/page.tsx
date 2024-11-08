@@ -14,24 +14,27 @@ import {
   batchTx,
   BridgePlugin,
   rawTx,
+  getTokenAddressForChainId,
 } from "klaster-sdk";
 
+import axios from "axios";
+
 import { getRoutes, RoutesRequest } from "@lifi/sdk";
-import { Hex } from "viem";
+import { Hex, parseAbi, encodeFunctionData } from "viem";
 
 import { useState } from "react";
 import Confetti from "react-confetti";
 import tokenList from "@/data/tokenListBaseSep.json"; // Import token list
 import { useAccount, useWallets } from "@particle-network/connectkit"; // Import wallet handling
 import { Erc20v2 } from "@/abis"; // Assuming this is the correct path for the ERC20 ABI
-import { Abi, Address, parseUnits, encodeFunctionData } from "viem";
+import { Abi, Address, parseUnits } from "viem";
 import {
   baseSepolia,
   optimismSepolia,
   arbitrumSepolia,
   sepolia, //https://faucet.triangleplatform.com/arbitrum/sepolia
 } from "@particle-network/connectkit/chains";
-
+import { BridgePluginParams, encodeApproveTx } from "klaster-sdk";
 // ONLY WORKS ON MAINNETS!!!
 export const liFiBrigePlugin: BridgePlugin = async (data: any) => {
   const routesRequest: RoutesRequest = {
@@ -71,6 +74,112 @@ export const liFiBrigePlugin: BridgePlugin = async (data: any) => {
   return {
     receivedOnDestination: BigInt(route.toAmountMin),
     txBatch: batchTx(data.sourceChainId, routeSteps),
+  };
+};
+
+// WORKS ON TESTNETS (hopefully)
+
+interface FeeObject {
+  pct: string;
+  total: string;
+}
+
+interface Limits {
+  minDeposit: string;
+  maxDeposit: string;
+  maxDepositInstant: string;
+  maxDepositShortDelay: string;
+  recommendedDepositInstant: string;
+}
+
+interface RelayFeeResponse {
+  estimatedFillTimeSec: number;
+  capitalFeePct: string;
+  capitalFeeTotal: string;
+  relayGasFeePct: string;
+  relayGasFeeTotal: string;
+  relayFeePct: string;
+  relayFeeTotal: string;
+  lpFeePct: string;
+  timestamp: string;
+  isAmountTooLow: boolean;
+  quoteBlock: string;
+  exclusiveRelayer: Address;
+  exclusivityDeadline: string;
+  spokePoolAddress: Address;
+  totalRelayFee: FeeObject;
+  relayerCapitalFee: FeeObject;
+  relayerGasFee: FeeObject;
+  lpFee: FeeObject;
+  limits: Limits;
+}
+
+async function getAcrossSuggestedFees(data: BridgePluginParams) {
+  const client = axios.create({
+    baseURL: "https://testnet.across.to/api",
+  });
+  const res = await client.get<RelayFeeResponse>(
+    `suggested-fees?inputToken=${data.sourceToken}&outputToken=${data.destinationToken}&originChainId=${data.sourceChainId}&destinationChainId=${data.destinationChainId}&amount=${data.amount}`
+  );
+  console.log(`https://testnet.across.to/api/suggested-fees?inputToken=${data.sourceToken}&outputToken=${data.destinationToken}&originChainId=${data.sourceChainId}&destinationChainId=${data.destinationChainId}&amount=${data.amount}`);
+  return res.data;
+}
+function encodeAcrossCallData(
+  data: BridgePluginParams,
+  fees: RelayFeeResponse
+) {
+  const abi = parseAbi([
+    "function depositV3(address depositor, address recipient, address inputToken, address outputToken, uint256 amount, uint256 originChainId, uint256 destinationChainId, bool exclusiveRelayer, uint256 relayerFeePct, uint256 deadline, uint256 exclusivityDeadline, bytes encryptedData)",
+  ]);
+  const outputAmount = data.amount + BigInt(fees.totalRelayFee.total);
+  const fillDeadline = Math.round(Date.now() / 1000) + 1000;
+  const [srcAddress, destAddress] = data.account.getAddresses([
+    data.sourceChainId,
+    data.destinationChainId,
+  ]);
+  if (!srcAddress || !destAddress) {
+    throw Error(
+      `Can't fetch address from multichain account for ${data.account}`
+    );
+  }
+  return encodeFunctionData({
+    abi: abi,
+    functionName: "depositV3",
+    args: [
+      srcAddress,
+      destAddress,
+      data.sourceToken,
+      data.destinationToken,
+      data.amount,
+      outputAmount,
+      BigInt(data.destinationChainId),
+      Boolean(fees.exclusiveRelayer),
+      BigInt(parseInt(fees.timestamp)),
+      BigInt(fillDeadline),
+      BigInt(parseInt(fees.exclusivityDeadline)),
+      "0x",
+    ],
+  });
+}
+export const acrossBridgePlugin: BridgePlugin = async (data) => {
+  console.log("runnig across bridge plugin");
+  const feesResponse = await getAcrossSuggestedFees(data);
+  const outputAmount = data.amount + BigInt(feesResponse.totalRelayFee.total);
+  // Approve sourceToken to the Across pool contract (for source chain)
+  const acrossApproveTx = encodeApproveTx({
+    tokenAddress: data.sourceToken,
+    amount: outputAmount,
+    recipient: feesResponse.spokePoolAddress,
+  });
+  // Call across pool to initiate bridging
+  const acrossCallTx = rawTx({
+    to: feesResponse.spokePoolAddress,
+    data: encodeAcrossCallData(data, feesResponse),
+    gasLimit: BigInt(250000),
+  });
+  return {
+    receivedOnDestination: outputAmount,
+    txBatch: batchTx(data.sourceChainId, [acrossApproveTx, acrossCallTx]),
   };
 };
 
@@ -208,19 +317,25 @@ export default function Component() {
 
       // const bridgePluginResult = await liFiBrigePlugin(bridgePluginParams);
 
+      const destinationChainId = baseSepolia.id;
+
       const bridgingOps = await encodeBridgingOps({
         tokenMapping: mappingUSDC,
         account: klaster.account,
-        amount: parseUnits("5.77777", uBalance.decimals),
-        bridgePlugin: (data) => liFiBrigePlugin(data),
+        amount: parseUnits("5.11111", uBalance.decimals),
+        // bridgePlugin: (data) => liFiBrigePlugin(data),
+        bridgePlugin: (data) => acrossBridgePlugin(data),
         client: mcClient,
-        destinationChainId: sepolia.id,
+        destinationChainId: destinationChainId,
         unifiedBalance: uBalance,
       });
 
+      const destChainTokenAddress = getTokenAddressForChainId(mappingUSDC, destinationChainId)!
+
       const sendUSDC = rawTx({
         gasLimit: 120000n,
-        to: address as Address,
+        // to: address as Address,
+        to: destChainTokenAddress,
         data: encodeFunctionData({
           abi: Erc20v2,
           functionName: "transfer",
@@ -230,11 +345,13 @@ export default function Component() {
 
       // Define the interchain transaction (iTx)
       const iTx = buildItx({
-        steps: bridgingOps.steps.concat(singleTx(sepolia.id, sendUSDC)),
+        steps: bridgingOps.steps.concat(singleTx(destinationChainId, sendUSDC)),
         feeTx: klaster.encodePaymentFee(baseSepolia.id, "USDC"),
       });
 
       const quote = await klaster.getQuote(iTx);
+
+      console.log(quote.itxHash)
 
       const walletClient = primaryWallet.getWalletClient();
 
