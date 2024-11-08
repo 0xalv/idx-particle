@@ -1,49 +1,51 @@
-# Particle Connect
+# IDX - Seamless Cross-Chain Index Creation Platform
 
-Particle Connect acts as a simple method of aggregating connection with both Web2 accounts through Particle Auth and Web3 accounts through traditional wallets, creating an equally accessible experience for both Web3 natives and traditional consumers. Specifically, Particle Connect is a custom connection modal built around interaction with Particle.
+IDX is a cutting-edge platform for creating and managing crypto indexes across different blockchains, leveraging advanced chain abstraction technologies for a seamless user experience.
 
-## Getting Started
+## 💫 Protocol Overview
 
-First, create and configure the `.env` file by referring to the `.env.sample`.
+IDX builds on Set Protocol to enable anyone to create and manage their own crypto indexes:
+- **Create**: Design your index by selecting tokens and their allocations
+- **Manage**: Set streaming fees (up to 10%) that accrue to you as the manager
+- **Trade**: Users can mint (issue) or redeem index tokens at their underlying value
+- **Earn**: Index managers earn streaming fees from all holders
 
-```
-# Particle Project Config, learn more info:  https://dashboard.particle.network/
-NEXT_PUBLIC_PROJECT_ID=xxxx
-NEXT_PUBLIC_CLIENT_KEY=xxxx
-NEXT_PUBLIC_APP_ID=xxxx
+## 🌟 Key Features
 
-# WalletConnect Project Id, learn more info: https://cloud.walletconnect.com/
-NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=xxxx
-```
+- **User-Friendly Index Creation**: Create custom crypto indexes with multiple tokens in just a few clicks
+- **Cross-Chain Capabilities**: Seamlessly interact with indexes across Base Sepolia and Arbitrum Sepolia
+- **Automated Gas Management**: Smart cross-chain gas bridging from Arbitrum to Base
+- **Social Login & Web3 Wallets**: Simplified onboarding through Particle Connect
+- **Streaming Fees**: Built-in revenue model for index managers
+- **Batch Operations**: One-click token approvals and issuance
 
-Run the development server:
+## 🔧 Technical Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Frontend**: Next.js with TypeScript and Tailwind CSS
+- **Smart Account Infrastructure**: Klaster SDK for chain abstraction
+- **Wallet Management**: Particle Connect for seamless authentication
+- **Token Standards**: ERC20-compatible with SetToken protocol
+- **Networks**: Base Sepolia & Arbitrum Sepolia testnets
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Under The Hood
 
-## Learn More
+IDX combines Particle Connect's authentication with Klaster's smart account capabilities to provide:
 
-### Connectkit
+- Cross-chain bridging via Across Protocol
+- Batch transaction processing
+- Smart contract interactions without network switching
 
-To learn more about Connectkit, take a look at the following resources:
+## 💡 Innovation Highlights
 
-- [🔥Live Demo](https://demo.particle.netwok) - feature demonstration and custom styling.
-- [Docs](https://developers.particle.network/api-reference/connect/desktop/web) - learn about `@particle-network/connectkit` features and API.
+- **Chain-Abstracted UX**: Users interact with multiple chains without knowing the underlying complexity
+- **Smart Gas Management**: Automated USDC bridging for gas fees
+- **Unified Interface**: Single dashboard for multi-chain index management
+- **Social Login**: Web2-like authentication experience for Web3 functionality
 
-### Next.js
+## 🛠️ Development Notes
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+Built with:
+- Particle Connect for authentication and wallet management
+- Klaster SDK for cross-chain operations
+- SetToken protocol for index functionality
+- Across Protocol for token bridging
