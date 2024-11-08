@@ -1,24 +1,10 @@
 [
   {
-    "ticker": "WBTC",
-    "img": "/src/assets/logos/BTC.png",
-    "name": "Wrapped Bitcoin",
-    "address": "0x54E18fa639d8D9a0A5686Ae1570C4f07234f3bA4",
-    "decimals": 8
-  },
-  {
     "ticker": "WETH",
     "img": "/src/assets/logos/ETH.png",
     "name": "Wrapped Ethereum",
     "address": "0x1599C83aaa685Ec033EB91a0B8758FB47a3377b1",
     "decimals": 18
-  },
-  {
-    "ticker": "USDT",
-    "img": "/src/assets/logos/USDT.png",
-    "name": "Tether",
-    "address": "0x6fdE724344917FD1CB3BA970AB2BE0ba12aB2fC6",
-    "decimals": 6
   },
   {
     "ticker": "ARB",
