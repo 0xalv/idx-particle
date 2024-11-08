@@ -14,7 +14,8 @@ import {
   baseSepolia,
   optimismSepolia,
   defineChain,
-  arbitrumSepolia
+  arbitrumSepolia,
+  sepolia,
 } from "@particle-network/connectkit/chains";
 
 const neoXTestnet = defineChain({
@@ -52,7 +53,7 @@ if (!projectId || !clientKey || !appId) {
 
 const supportChains: Chain[] = [];
 // evm start
-supportChains.push(baseSepolia, optimismSepolia, arbitrumSepolia);
+supportChains.push(baseSepolia, optimismSepolia, arbitrumSepolia, sepolia);
 // evm end
 
 const config = createConfig({

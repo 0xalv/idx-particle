@@ -28,9 +28,11 @@ import { Abi, Address, parseUnits, encodeFunctionData } from "viem";
 import {
   baseSepolia,
   optimismSepolia,
-  arbitrumSepolia, //https://faucet.triangleplatform.com/arbitrum/sepolia
+  arbitrumSepolia,
+  sepolia, //https://faucet.triangleplatform.com/arbitrum/sepolia
 } from "@particle-network/connectkit/chains";
 
+// ONLY WORKS ON MAINNETS!!!
 export const liFiBrigePlugin: BridgePlugin = async (data: any) => {
   const routesRequest: RoutesRequest = {
     fromChainId: data.sourceChainId,
@@ -135,11 +137,24 @@ export default function Component() {
       const klasterBaseAddress = klaster.account.getAddress(baseSepolia.id);
       console.log("Klaster's Base Sepolia Address:", klasterBaseAddress);
 
-      const klasterOptimismAddress = klaster.account.getAddress(optimismSepolia.id);
-      console.log("Klaster's Optimism Sepolia Address:", klasterOptimismAddress);
+      const klasterSepoliaAddress = klaster.account.getAddress(sepolia.id);
+      console.log("Klaster's Sepolia Address:", klasterSepoliaAddress);
 
-      const klasterArbitrumAddress = klaster.account.getAddress(arbitrumSepolia.id);
-      console.log("Klaster's Arbitrum Sepolia Address:", klasterArbitrumAddress);
+      const klasterOptimismAddress = klaster.account.getAddress(
+        optimismSepolia.id
+      );
+      console.log(
+        "Klaster's Optimism Sepolia Address:",
+        klasterOptimismAddress
+      );
+
+      const klasterArbitrumAddress = klaster.account.getAddress(
+        arbitrumSepolia.id
+      );
+      console.log(
+        "Klaster's Arbitrum Sepolia Address:",
+        klasterArbitrumAddress
+      );
 
       console.log(klaster);
 
@@ -149,7 +164,11 @@ export default function Component() {
         //   optimismSepolia.rpcUrls.default.http[0]
         // ),
         buildRpcInfo(baseSepolia.id, baseSepolia.rpcUrls.default.http[0]),
-        buildRpcInfo(arbitrumSepolia.id, arbitrumSepolia.rpcUrls.default.http[0]),
+        buildRpcInfo(sepolia.id, sepolia.rpcUrls.default.http[0]),
+        buildRpcInfo(
+          arbitrumSepolia.id,
+          arbitrumSepolia.rpcUrls.default.http[0]
+        ),
       ]);
 
       const mappingUSDC = buildTokenMapping([
@@ -165,6 +184,7 @@ export default function Component() {
           baseSepolia.id,
           "0x036CbD53842c5426634e7929541eC2318f3dCF7e"
         ),
+        deployment(sepolia.id, "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238"),
       ]);
 
       const uBalance = await mcClient.getUnifiedErc20Balance({
@@ -183,7 +203,7 @@ export default function Component() {
       //   options: {
       //     order: "FASTEST",
       //   },
-        
+
       // }
 
       // const bridgePluginResult = await liFiBrigePlugin(bridgePluginParams);
@@ -191,16 +211,16 @@ export default function Component() {
       const bridgingOps = await encodeBridgingOps({
         tokenMapping: mappingUSDC,
         account: klaster.account,
-        amount: uBalance.balance - parseUnits("1", uBalance.decimals), // Don't send entire balance
-        bridgePlugin: liFiBrigePlugin,
+        amount: parseUnits("5.77777", uBalance.decimals),
+        bridgePlugin: (data) => liFiBrigePlugin(data),
         client: mcClient,
-        destinationChainId: baseSepolia.id,
+        destinationChainId: sepolia.id,
         unifiedBalance: uBalance,
       });
 
       const sendUSDC = rawTx({
-        gasLimit: 90000n,
-        to: "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+        gasLimit: 120000n,
+        to: address as Address,
         data: encodeFunctionData({
           abi: Erc20v2,
           functionName: "transfer",
@@ -208,11 +228,9 @@ export default function Component() {
         }),
       });
 
-      console.log("Add: ", address);
-
       // Define the interchain transaction (iTx)
       const iTx = buildItx({
-        steps: bridgingOps.steps.concat(singleTx(baseSepolia.id, sendUSDC)),
+        steps: bridgingOps.steps.concat(singleTx(sepolia.id, sendUSDC)),
         feeTx: klaster.encodePaymentFee(baseSepolia.id, "USDC"),
       });
 
