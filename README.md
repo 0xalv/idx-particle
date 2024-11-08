@@ -5,6 +5,7 @@ IDX is a cutting-edge platform for creating and managing crypto indexes across d
 ## 💫 Protocol Overview
 
 IDX builds on Set Protocol to enable anyone to create and manage their own crypto indexes:
+
 - **Create**: Design your index by selecting tokens and their allocations
 - **Manage**: Set streaming fees (up to 10%) that accrue to you as the manager
 - **Trade**: Users can mint (issue) or redeem index tokens at their underlying value
@@ -45,7 +46,13 @@ IDX combines Particle Connect's authentication with Klaster's smart account capa
 ## 🛠️ Development Notes
 
 Built with:
+
 - Particle Connect for authentication and wallet management
 - Klaster SDK for cross-chain operations
 - SetToken protocol for index functionality
 - Across Protocol for token bridging
+
+## Additional Submission Repositories:
+
+- Contracts: https://github.com/uri011/particle-hackathon-contracts
+- Server: https://github.com/uri011/particle-hackathon-server
