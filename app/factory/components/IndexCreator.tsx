@@ -120,107 +120,149 @@ export const IndexCreator: React.FC = () => {
       !indexSymbol
     )
       return;
-
     setLoading(true);
-
     const componentAddresses = selectedTokens.map(
       (token) => token.token.address
     );
-
     const componentUnits = selectedTokens.map((token) =>
       parseUnits(token.amount.toString(), token.token.decimals)
     );
-
     try {
       const walletClient = primaryWallet.getWalletClient();
-
-      // Initialize Klaster with Biconomy as the account provider
-      const klaster = await initKlaster({
-        accountInitData: loadBicoV2Account({
-          owner: address as Address,
-        }),
-        nodeUrl: klasterNodeHost.default,
-      });
-
-      // Set up the multichain client
-      const mcClient = buildMultichainReadonlyClient([
-        buildRpcInfo(baseSepolia.id, baseSepolia.rpcUrls.default.http[0]),
-        buildRpcInfo(
-          arbitrumSepolia.id,
-          arbitrumSepolia.rpcUrls.default.http[0]
-        ),
-      ]);
-
-      // Token mapping configuration for USDC on Base and Arbitrum
-      const mappingUSDC = buildTokenMapping([
-        deployment(
-          arbitrumSepolia.id,
-          "0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d"
-        ),
-        deployment(
-          baseSepolia.id,
-          "0x036CbD53842c5426634e7929541eC2318f3dCF7e"
-        ),
-      ]);
-
-      const uBalance = await mcClient.getUnifiedErc20Balance({
-        tokenMapping: mappingUSDC,
-        account: klaster.account,
-      });
-
-      console.log(uBalance);
-
-      // Define the transaction for creating an index
-      const createIndexTx = rawTx({
-        gasLimit: 1000000n,
-        to: setTokenCreatorAddress,
-        data: encodeFunctionData({
-          abi: SetTokenCreator as Abi,
-          functionName: "create",
-          args: [
-            componentAddresses,
-            componentUnits,
-            [basicIssuanceModuleAddress, streamingFeeModuleAddress],
-            address as Address,
-            indexName,
-            indexSymbol,
-          ],
-        }),
-      });
-
-      // Encode bridging ops to fund gas fees on Base from Arbitrum
-      const bridgingOps = await encodeBridgingOps({
-        tokenMapping: mappingUSDC,
-        account: klaster.account,
-        amount: parseUnits("5", uBalance.decimals),
-        bridgePlugin: (data) => acrossBridgePlugin(data),
-        client: mcClient,
-        destinationChainId: baseSepolia.id,
-        unifiedBalance: uBalance,
-      });
-
-      // Create interchain transaction for creating the index with bridged gas fees
-      const iTx = buildItx({
-        steps: bridgingOps.steps.concat(
-          singleTx(baseSepolia.id, createIndexTx)
-        ),
-        feeTx: klaster.encodePaymentFee(arbitrumSepolia.id, "USDC"),
-      });
-
-      const quote = await klaster.getQuote(iTx);
-      const signed = await walletClient.signMessage({
-        message: { raw: quote.itxHash },
+      const createIndexArgs = [
+        componentAddresses,
+        componentUnits,
+        [basicIssuanceModuleAddress, streamingFeeModuleAddress], // Modules [issue, fee]
+        address as Address,
+        indexName,
+        indexSymbol,
+      ];
+      console.table(createIndexArgs);
+      const hash = await walletClient.writeContract({
+        address: setTokenCreatorAddress,
+        abi: SetTokenCreator as Abi,
+        functionName: "create",
+        args: createIndexArgs,
+        chain: chain,
         account: address as Address,
       });
-
-      const result = await klaster.execute(quote, signed);
-      console.log("Index creation transaction hash:", result.itxHash);
+      console.log("Transaction hash:", hash);
     } catch (error) {
       console.error("Error creating index:", error);
     } finally {
       setLoading(false);
     }
   };
+
+  // const handleCreateIndex = async () => {
+  //   if (
+  //     !primaryWallet ||
+  //     selectedTokens.length === 0 ||
+  //     !indexName ||
+  //     !indexSymbol
+  //   )
+  //     return;
+
+  //   setLoading(true);
+
+  //   const componentAddresses = selectedTokens.map(
+  //     (token) => token.token.address
+  //   );
+
+  //   const componentUnits = selectedTokens.map((token) =>
+  //     parseUnits(token.amount.toString(), token.token.decimals)
+  //   );
+
+  //   try {
+  //     const walletClient = primaryWallet.getWalletClient();
+
+  //     // Initialize Klaster with Biconomy as the account provider
+  //     const klaster = await initKlaster({
+  //       accountInitData: loadBicoV2Account({
+  //         owner: address as Address,
+  //       }),
+  //       nodeUrl: klasterNodeHost.default,
+  //     });
+
+  //     // Set up the multichain client
+  //     const mcClient = buildMultichainReadonlyClient([
+  //       buildRpcInfo(baseSepolia.id, baseSepolia.rpcUrls.default.http[0]),
+  //       buildRpcInfo(
+  //         arbitrumSepolia.id,
+  //         arbitrumSepolia.rpcUrls.default.http[0]
+  //       ),
+  //     ]);
+
+  //     // Token mapping configuration for USDC on Base and Arbitrum
+  //     const mappingUSDC = buildTokenMapping([
+  //       deployment(
+  //         arbitrumSepolia.id,
+  //         "0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d"
+  //       ),
+  //       deployment(
+  //         baseSepolia.id,
+  //         "0x036CbD53842c5426634e7929541eC2318f3dCF7e"
+  //       ),
+  //     ]);
+
+  //     const uBalance = await mcClient.getUnifiedErc20Balance({
+  //       tokenMapping: mappingUSDC,
+  //       account: klaster.account,
+  //     });
+
+  //     console.log(uBalance);
+
+  //     // Define the transaction for creating an index
+  //     const createIndexTx = rawTx({
+  //       gasLimit: 1000000n,
+  //       to: setTokenCreatorAddress,
+  //       data: encodeFunctionData({
+  //         abi: SetTokenCreator as Abi,
+  //         functionName: "create",
+  //         args: [
+  //           componentAddresses,
+  //           componentUnits,
+  //           [basicIssuanceModuleAddress, streamingFeeModuleAddress],
+  //           address as Address,
+  //           indexName,
+  //           indexSymbol,
+  //         ],
+  //       }),
+  //     });
+
+  //     // Encode bridging ops to fund gas fees on Base from Arbitrum
+  //     const bridgingOps = await encodeBridgingOps({
+  //       tokenMapping: mappingUSDC,
+  //       account: klaster.account,
+  //       amount: parseUnits("5", uBalance.decimals),
+  //       bridgePlugin: (data) => acrossBridgePlugin(data),
+  //       client: mcClient,
+  //       destinationChainId: baseSepolia.id,
+  //       unifiedBalance: uBalance,
+  //     });
+
+  //     // Create interchain transaction for creating the index with bridged gas fees
+  //     const iTx = buildItx({
+  //       steps: bridgingOps.steps.concat(
+  //         singleTx(baseSepolia.id, createIndexTx)
+  //       ),
+  //       feeTx: klaster.encodePaymentFee(arbitrumSepolia.id, "USDC"),
+  //     });
+
+  //     const quote = await klaster.getQuote(iTx);
+  //     const signed = await walletClient.signMessage({
+  //       message: { raw: quote.itxHash },
+  //       account: address as Address,
+  //     });
+
+  //     const result = await klaster.execute(quote, signed);
+  //     console.log("Index creation transaction hash:", result.itxHash);
+  //   } catch (error) {
+  //     console.error("Error creating index:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   if (!isConnected) {
     return (
