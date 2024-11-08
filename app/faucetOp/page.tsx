@@ -37,50 +37,6 @@ import {
 import { BridgePluginParams, encodeApproveTx } from "klaster-sdk";
 import { sep } from "path";
 
-// ONLY WORKS ON MAINNETS!!!
-export const liFiBrigePlugin: BridgePlugin = async (data: any) => {
-  const routesRequest: RoutesRequest = {
-    fromChainId: data.sourceChainId,
-    toChainId: data.destinationChainId,
-    fromTokenAddress: data.sourceToken,
-    toTokenAddress: data.destinationToken,
-    fromAmount: data.amount.toString(),
-    options: {
-      order: "FASTEST",
-    },
-  };
-
-  const result = await getRoutes(routesRequest);
-  const route = result.routes.at(0);
-
-  if (!route) {
-    throw Error("...");
-  }
-
-  const routeSteps = route.steps.map((step) => {
-    if (!step.transactionRequest) {
-      throw Error("...");
-    }
-    const { to, gasLimit, data, value } = step.transactionRequest;
-    if (!to || !gasLimit || !data || !value) {
-      throw Error("...");
-    }
-    return rawTx({
-      to: to as Address,
-      gasLimit: BigInt(gasLimit),
-      data: data as Hex,
-      value: BigInt(value),
-    });
-  });
-
-  return {
-    receivedOnDestination: BigInt(route.toAmountMin),
-    txBatch: batchTx(data.sourceChainId, routeSteps),
-  };
-};
-
-// WORKS ON TESTNETS (hopefully)
-
 async function getAcrossSuggestedFees(data: BridgePluginParams) {
   const client = axios.create({
     baseURL: "https://testnet.across.to/api/",
@@ -214,23 +170,6 @@ export default function Component() {
     },
   ] as const;
 
-  function createErc20TransferData({
-    to,
-    amount,
-    decimals = 18,
-  }: {
-    to: `0x${string}`;
-    amount: string | number;
-    decimals?: number;
-  }) {
-    const parsedAmount = parseUnits(amount.toString(), decimals);
-    return encodeFunctionData({
-      abi: erc20Abi,
-      functionName: "transfer",
-      args: [to, parsedAmount],
-    });
-  }
-
   const handleMint = async () => {
     if (!isConnected) {
       alert("Please connect your wallet.");
@@ -243,8 +182,11 @@ export default function Component() {
     }
 
     setLoading(true);
+    setShowConfetti(true);
 
     try {
+      const walletClient = primaryWallet.getWalletClient();
+
       // Initialize Klaster with Biconomy as the account provider
       const klaster = await initKlaster({
         accountInitData: loadBicoV2Account({
@@ -253,51 +195,17 @@ export default function Component() {
         nodeUrl: klasterNodeHost.default,
       });
 
-      console.log("Base id: ", baseSepolia.id);
-      console.log("Sepolia id: ", sepolia.id);
-
-      const klasterBaseAddress = klaster.account.getAddress(baseSepolia.id);
-      console.log("Klaster's Base Sepolia Address:", klasterBaseAddress);
-
-      const klasterSepoliaAddress = klaster.account.getAddress(sepolia.id);
-      console.log("Klaster's Sepolia Address:", klasterSepoliaAddress);
-
-      const klasterOptimismAddress = klaster.account.getAddress(
-        optimismSepolia.id
-      );
-      console.log(
-        "Klaster's Optimism Sepolia Address:",
-        klasterOptimismAddress
-      );
-
-      const klasterArbitrumAddress = klaster.account.getAddress(
-        arbitrumSepolia.id
-      );
-      console.log(
-        "Klaster's Arbitrum Sepolia Address:",
-        klasterArbitrumAddress
-      );
-
-      console.log(klaster);
-
+      // Set up the multichain client
       const mcClient = buildMultichainReadonlyClient([
-        // buildRpcInfo(
-        //   optimismSepolia.id,
-        //   optimismSepolia.rpcUrls.default.http[0]
-        // ),
         buildRpcInfo(baseSepolia.id, baseSepolia.rpcUrls.default.http[0]),
-        // buildRpcInfo(sepolia.id, sepolia.rpcUrls.default.http[0]),
         buildRpcInfo(
           arbitrumSepolia.id,
           arbitrumSepolia.rpcUrls.default.http[0]
         ),
       ]);
 
+      // Token mapping configuration (example for USDC on Base and Arbitrum)
       const mappingUSDC = buildTokenMapping([
-        // deployment(
-        //   optimismSepolia.id,
-        //   "0x5fd84259d66Cd46123540766Be93DFE6D43130D7"
-        // ),
         deployment(
           arbitrumSepolia.id,
           "0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d"
@@ -306,7 +214,6 @@ export default function Component() {
           baseSepolia.id,
           "0x036CbD53842c5426634e7929541eC2318f3dCF7e"
         ),
-        // deployment(sepolia.id, "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238"),
       ]);
 
       const uBalance = await mcClient.getUnifiedErc20Balance({
@@ -316,105 +223,209 @@ export default function Component() {
 
       console.log(uBalance);
 
-      // const bridgePluginParams: any = {
-      //   fromChainId: arbitrumSepolia.id,
-      //   toChainId: baseSepolia.id,
-      //   fromTokenAddress: "0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d",
-      //   toTokenAddress: "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
-      //   fromAmount: data.amount.toString(),
-      //   options: {
-      //     order: "FASTEST",
-      //   },
-
-      // }
-
-      // const bridgePluginResult = await liFiBrigePlugin(bridgePluginParams);
-
       const destinationChainId = baseSepolia.id;
-
-      const bridgingOps = await encodeBridgingOps({
-        tokenMapping: mappingUSDC,
-        account: klaster.account,
-        amount: parseUnits("3.111", uBalance.decimals),
-        bridgePlugin: (data) => acrossBridgePlugin(data),
-        client: mcClient,
-        destinationChainId: destinationChainId,
-        unifiedBalance: uBalance,
-      });
 
       const destChainTokenAddress = getTokenAddressForChainId(
         mappingUSDC,
         destinationChainId
       )!;
 
-      const sendUSDC = rawTx({
-        gasLimit: 120000n,
-        // to: address as Address,
-        to: destChainTokenAddress,
-        data: encodeFunctionData({
-          abi: Erc20v2,
-          functionName: "transfer",
-          args: [address, bridgingOps.totalReceivedOnDestination],
-        }),
+      // Minting Tokens on Base
+      const tokensToMint = tokenList.slice(0, 2); // Limited to 2 tokens to test it with klaster
+      const mintPromises = tokensToMint.map(async (token) => {
+        const mintAmount = BigInt(100 * 10 ** token.decimals); // Example: mint 100 tokens
+
+        const mintTx = rawTx({
+          gasLimit: 700000n,
+          to: token.address as Address,
+          data: encodeFunctionData({
+            abi: Erc20v2,
+            functionName: "mint",
+            args: [address, mintAmount],
+          }),
+        });
+
+        // Encode bridging ops to fund gas fees on Base from Arbitrum
+        const bridgingOps = await encodeBridgingOps({
+          tokenMapping: mappingUSDC,
+          account: klaster.account,
+          amount: parseUnits("3.111", uBalance.decimals),
+          bridgePlugin: (data) => acrossBridgePlugin(data),
+          client: mcClient,
+          destinationChainId: baseSepolia.id,
+          unifiedBalance: uBalance,
+        });
+
+        // Create interchain transaction
+        const iTx = buildItx({
+          steps: bridgingOps.steps.concat(singleTx(baseSepolia.id, mintTx)),
+          feeTx: klaster.encodePaymentFee(arbitrumSepolia.id, "USDC"),
+        });
+
+        const quote = await klaster.getQuote(iTx);
+        const signed = await walletClient.signMessage({
+          message: { raw: quote.itxHash },
+          account: address as Address,
+        });
+
+        const result = await klaster.execute(quote, signed);
+        console.log(`Minting transaction hash: ${result.itxHash}`);
+
+        return `You have received 100 ${token.ticker} tokens.`;
       });
 
-      // Define the interchain transaction (iTx)
-      const iTx = buildItx({
-        steps: bridgingOps.steps.concat(singleTx(destinationChainId, sendUSDC)),
-        feeTx: klaster.encodePaymentFee(arbitrumSepolia.id, "USDC"),
-      });
-
-      const quote = await klaster.getQuote(iTx);
-
-      console.log(quote.itxHash);
-
-      const walletClient = primaryWallet.getWalletClient();
-
-      const signed = await walletClient.signMessage({
-        message: {
-          raw: quote.itxHash,
-        },
-        account: address as Address,
-      });
-
-      const result = await klaster.execute(quote, signed);
-
-      console.log(result.itxHash);
-
-      // // Set up multichain RPC client for Optimism and Base
-      // const mcClient = buildMultichainReadonlyClient([
-      //   buildRpcInfo(
-      //     optimismSepolia.id,
-      //     optimismSepolia.rpcUrls.default.http[0]
-      //   ),
-      //   buildRpcInfo(baseSepolia.id, baseSepolia.rpcUrls.default.http[0]),
-      // ]);
-
-      // // Build a token mapping by calling the buildTokenMapping function and passing instances of
-      // // deployment object into the array. These represent the chainId → address mappings.
-      // const mcUSDC = buildTokenMapping([
-      //   deployment(
-      //     optimismSepolia.id,
-      //     "0x036CbD53842c5426634e7929541eC2318f3dCF7e"
-      //   ),
-      //   deployment(
-      //     baseSepolia.id,
-      //     "0x5fd84259d66Cd46123540766Be93DFE6D43130D7"
-      //   ),
-      // ]);
-
-      // // Encode the destination chain action (minting tokens on Base Sepolia)
-      // const mintTokensOp = encodeFunctionData({
-      //   abi: Erc20v2, // Replace with your actual ERC20 ABI
-      //   functionName: "mint", // Name of the mint function
-      //   args: [address, 10 * 18 * 10], // Example: mint 10 tokens to the user
-      // });
+      // Wait for all minting transactions to complete
+      const mintResults = await Promise.all(mintPromises);
+      setMintedTokens(mintResults);
+      setTimeout(() => setShowConfetti(false), 10000); // Hide confetti after 10 seconds
     } catch (error) {
-      console.error("Cross-chain mint failed:", error);
+      console.error("Minting failed:", error);
+      alert("Minting failed, please check the console for more details.");
     } finally {
       setLoading(false);
     }
   };
+
+  // const handleMint = async () => {
+  //   if (!isConnected) {
+  //     alert("Please connect your wallet.");
+  //     return;
+  //   }
+
+  //   if (!primaryWallet || !address) {
+  //     alert("Wallet is not available.");
+  //     return;
+  //   }
+
+  //   setLoading(true);
+
+  //   try {
+  //     // Initialize Klaster with Biconomy as the account provider
+  //     const klaster = await initKlaster({
+  //       accountInitData: loadBicoV2Account({
+  //         owner: address as Address,
+  //       }),
+  //       nodeUrl: klasterNodeHost.default,
+  //     });
+
+  //     console.log("Base id: ", baseSepolia.id);
+  //     console.log("Sepolia id: ", sepolia.id);
+
+  //     const klasterBaseAddress = klaster.account.getAddress(baseSepolia.id);
+  //     console.log("Klaster's Base Sepolia Address:", klasterBaseAddress);
+
+  //     const klasterSepoliaAddress = klaster.account.getAddress(sepolia.id);
+  //     console.log("Klaster's Sepolia Address:", klasterSepoliaAddress);
+
+  //     const klasterOptimismAddress = klaster.account.getAddress(
+  //       optimismSepolia.id
+  //     );
+  //     console.log(
+  //       "Klaster's Optimism Sepolia Address:",
+  //       klasterOptimismAddress
+  //     );
+
+  //     const klasterArbitrumAddress = klaster.account.getAddress(
+  //       arbitrumSepolia.id
+  //     );
+  //     console.log(
+  //       "Klaster's Arbitrum Sepolia Address:",
+  //       klasterArbitrumAddress
+  //     );
+
+  //     console.log(klaster);
+
+  //     const mcClient = buildMultichainReadonlyClient([
+  //       // buildRpcInfo(
+  //       //   optimismSepolia.id,
+  //       //   optimismSepolia.rpcUrls.default.http[0]
+  //       // ),
+  //       buildRpcInfo(baseSepolia.id, baseSepolia.rpcUrls.default.http[0]),
+  //       // buildRpcInfo(sepolia.id, sepolia.rpcUrls.default.http[0]),
+  //       buildRpcInfo(
+  //         arbitrumSepolia.id,
+  //         arbitrumSepolia.rpcUrls.default.http[0]
+  //       ),
+  //     ]);
+
+  //     const mappingUSDC = buildTokenMapping([
+  //       // deployment(
+  //       //   optimismSepolia.id,
+  //       //   "0x5fd84259d66Cd46123540766Be93DFE6D43130D7"
+  //       // ),
+  //       deployment(
+  //         arbitrumSepolia.id,
+  //         "0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d"
+  //       ),
+  //       deployment(
+  //         baseSepolia.id,
+  //         "0x036CbD53842c5426634e7929541eC2318f3dCF7e"
+  //       ),
+  //       // deployment(sepolia.id, "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238"),
+  //     ]);
+
+  //     const uBalance = await mcClient.getUnifiedErc20Balance({
+  //       tokenMapping: mappingUSDC,
+  //       account: klaster.account,
+  //     });
+
+  //     console.log(uBalance);
+
+  //     const destinationChainId = baseSepolia.id;
+
+  //     const bridgingOps = await encodeBridgingOps({
+  //       tokenMapping: mappingUSDC,
+  //       account: klaster.account,
+  //       amount: parseUnits("3.111", uBalance.decimals),
+  //       bridgePlugin: (data) => acrossBridgePlugin(data),
+  //       client: mcClient,
+  //       destinationChainId: destinationChainId,
+  //       unifiedBalance: uBalance,
+  //     });
+
+  //     const destChainTokenAddress = getTokenAddressForChainId(
+  //       mappingUSDC,
+  //       destinationChainId
+  //     )!;
+
+  //     const sendUSDC = rawTx({
+  //       gasLimit: 120000n,
+  //       to: destChainTokenAddress,
+  //       data: encodeFunctionData({
+  //         abi: Erc20v2,
+  //         functionName: "transfer",
+  //         args: [address, bridgingOps.totalReceivedOnDestination],
+  //       }),
+  //     });
+
+  //     // Define the interchain transaction (iTx)
+  //     const iTx = buildItx({
+  //       steps: bridgingOps.steps.concat(singleTx(destinationChainId, sendUSDC)),
+  //       feeTx: klaster.encodePaymentFee(arbitrumSepolia.id, "USDC"),
+  //     });
+
+  //     const quote = await klaster.getQuote(iTx);
+
+  //     console.log(quote.itxHash);
+
+  //     const walletClient = primaryWallet.getWalletClient();
+
+  //     const signed = await walletClient.signMessage({
+  //       message: {
+  //         raw: quote.itxHash,
+  //       },
+  //       account: address as Address,
+  //     });
+
+  //     const result = await klaster.execute(quote, signed);
+
+  //     console.log(result.itxHash);
+  //   } catch (error) {
+  //     console.error("Cross-chain mint failed:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   //   const handleMint = async () => {
   //     if (!isConnected) {
