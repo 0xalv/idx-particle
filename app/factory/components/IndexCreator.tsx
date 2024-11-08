@@ -112,6 +112,52 @@ export const IndexCreator: React.FC = () => {
     0
   );
 
+  // const handleCreateIndex = async () => {
+  //   if (
+  //     !primaryWallet ||
+  //     selectedTokens.length === 0 ||
+  //     !indexName ||
+  //     !indexSymbol
+  //   )
+  //     return;
+
+  //   setLoading(true);
+
+  //   const componentAddresses = selectedTokens.map(
+  //     (token) => token.token.address
+  //   );
+
+  //   const componentUnits = selectedTokens.map((token) =>
+  //     parseUnits(token.amount.toString(), token.token.decimals)
+  //   );
+
+  //   try {
+  //     const walletClient = primaryWallet.getWalletClient();
+  //     const createIndexArgs = [
+  //       componentAddresses,
+  //       componentUnits,
+  //       [basicIssuanceModuleAddress, streamingFeeModuleAddress], // Modules [issue, fee]
+  //       address as Address,
+  //       indexName,
+  //       indexSymbol,
+  //     ];
+  //     console.table(createIndexArgs);
+  //     const hash = await walletClient.writeContract({
+  //       address: setTokenCreatorAddress,
+  //       abi: SetTokenCreator as Abi,
+  //       functionName: "create",
+  //       args: createIndexArgs,
+  //       chain: chain,
+  //       account: address as Address,
+  //     });
+  //     console.log("Transaction hash:", hash);
+  //   } catch (error) {
+  //     console.error("Error creating index:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const handleCreateIndex = async () => {
     if (
       !primaryWallet ||
