@@ -1,19 +1,31 @@
-
 import products from "@/data/products.json";
+import tokenLogos from "@/data/tokenLogos.json";
+import Link from "next/link";
+
+const getRandomLogo = () => {
+  const randomIndex = Math.floor(Math.random() * tokenLogos.length);
+  return tokenLogos[randomIndex].logo;
+};
 
 const ProductTable = () => {
-
   return (
     <div className="px-2 pt-16 sm:px-4 md:px-8 md:pt-20 lg:px-12">
       <div className="flex flex-col items-center space-y-10 md:space-y-12">
         <h2 className="text-[#364647] max-w-3xl text-center text-3xl font-bold md:text-4xl lg:text-5xl lg:leading-tight">
-          Crypto is complex. <br /> Our products make it simple.
+          Investing can be intimidating. <br /> Our platform makes it easy.
         </h2>
 
         <h3 className="text-[#859393] max-w-lg text-center text-sm font-medium md:text-base">
-          Unlock powerful sector, leverage and yield strategies with our simple
+          Unlock powerful sector, leverage and yield strategies with our index
           tokens.
         </h3>
+
+        <Link
+          href={`/factory`}
+          className="bg-blue-500 hover:bg-blue-400 text-white rounded-lg px-11 py-3"
+        >
+          Create Index
+        </Link>
       </div>
 
       <div className="mx-auto my-12 flex max-w-screen-2xl flex-col">
@@ -22,9 +34,7 @@ const ProductTable = () => {
         {/* Desktop Table */}
         <div className="bg-white border-gray-100 mt-8 w-full overflow-auto rounded-3xl border py-4 shadow-sm hidden md:flex flex-col">
           <div className="hidden justify-between py-6 md:flex">
-          <div
-              className="text-[#627171] hover:text-[#364647] min-w-[410px] cursor-pointer items-center px-6 text-left text-sm font-medium group"
-            >
+            <div className="text-[#627171] hover:text-[#364647] min-w-[410px] cursor-pointer items-center px-6 text-left text-sm font-medium group">
               Index
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -52,10 +62,7 @@ const ProductTable = () => {
             <div className="text-[#627171] hover:text-[#364647] min-w-[120px] text-right text-sm font-medium">
               24h
             </div>
-            <div className="text-[#627171] hover:text-[#364647] min-w-[120px] text-center text-sm font-medium">
-              APY
-            </div>
-            <div className="text-[#627171] hover:text-[#364647] min-w-[120px] text-right text-sm font-medium pr-8">
+            <div className="text-[#627171] hover:text-[#364647] min-w-[120px] text-right font-medium pr-8">
               TVL
             </div>
           </div>
@@ -70,14 +77,6 @@ const ProductTable = () => {
                   : changeValue < 0
                   ? "text-red-500"
                   : "text-[#627171]";
-              const typeBgColor =
-                product.type === "Index"
-                  ? "bg-[#f4ecff]"
-                  : product.type === "Yield"
-                  ? "bg-[#ffeff6]"
-                  : product.type === "Leverage"
-                  ? "bg-[#e7f2ff]"
-                  : "";
 
               return (
                 <a
@@ -93,7 +92,7 @@ const ProductTable = () => {
                         width="30"
                         height="30"
                         decoding="async"
-                        src={product.logo}
+                        src={getRandomLogo()}
                         style={{ color: "transparent" }}
                       />
                     </div>
@@ -105,15 +104,13 @@ const ProductTable = () => {
                     </div>
                   </div>
                   <div className="text-[#627171] text-sm font-medium min-w-[120px]">
-                    <div
-                      className={`border-[#627171] mx-auto w-28 rounded-2xl border px-4 py-1 text-center ${typeBgColor}`}
-                    >
-                      {product.type}
+                    <div className="bg-[#f4ecff] border-[#627171] mx-auto w-28 rounded-2xl border px-4 py-1 text-center">
+                      Index
                     </div>
                   </div>
                   <div className="text-[#627171] text-sm font-medium min-w-[120px] text-center">
                     <div className="bg-gray-300 border-[#627171] mx-auto w-28 rounded-2xl border px-4 py-1">
-                      {product.theme}
+                      DeFi
                     </div>
                   </div>
                   <div className="text-[#627171] text-sm font-medium min-w-[130px] px-2 text-right">
@@ -123,9 +120,6 @@ const ProductTable = () => {
                     className={`text-sm font-medium min-w-[120px] px-2 text-right ${changeColor}`}
                   >
                     {product.change}
-                  </div>
-                  <div className="text-[#627171] text-sm font-medium min-w-[120px] text-center">
-                    {product.apy}
                   </div>
                   <div className="text-[#627171] text-sm font-medium min-w-[120px] px-2 pr-8 text-right">
                     {product.tvl}
@@ -160,7 +154,7 @@ const ProductTable = () => {
                       width="30"
                       height="30"
                       decoding="async"
-                      src={product.logo}
+                      src={getRandomLogo()}
                       style={{ color: "transparent" }}
                     />
                   </div>
@@ -190,16 +184,6 @@ const ProductTable = () => {
                       className={`text-sm font-medium text-right ${changeColor}`}
                     >
                       {product.change}
-                    </div>
-                  </div>
-                </div>
-                <div className="flex w-full content-between items-center py-2">
-                  <div className="text-[#627171] flex-grow text-sm font-medium">
-                    APY
-                  </div>
-                  <div className="flex-grow">
-                    <div className="text-[#627171] text-sm font-medium text-right">
-                      {product.apy}
                     </div>
                   </div>
                 </div>

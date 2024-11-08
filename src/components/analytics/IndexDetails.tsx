@@ -8,11 +8,8 @@ interface TokenData {
   "deploy-timestamp": string;
   "price-data": DataSection;
   "mcap-data": DataSection;
-  "fees-data": DataSection;
   "token-data": {
     supply: string;
-    "issuance-data": DataSection;
-    "redeem-data": DataSection;
     distribution: Distribution[];
   };
 }
@@ -43,13 +40,6 @@ const IndexDetails: React.FC<{ tokenData: TokenData }> = ({ tokenData }) => {
   const formatKey = (key: string) => {
     if (key === "price") return "Current Price";
     if (key === "mcap") return "Market Cap";
-    if (key === "fee") return "Streaming Fee";
-    if (key === "total" && selectedDataSection === "fees-data")
-      return "Tokens Claimed in Fees";
-    if (key === "total" && selectedDataSection === "token-data.issuance-data")
-      return "Total Tokens Issued";
-    if (key === "total" && selectedDataSection === "token-data.redeem-data")
-      return "Total Tokens Redeemed";
 
     // Replace delta and capitalize abbreviations for time periods (24H, 7D, etc.)
     if (key.includes("delta")) {
@@ -71,11 +61,8 @@ const IndexDetails: React.FC<{ tokenData: TokenData }> = ({ tokenData }) => {
     const timePeriods = ["24H", "7D", "1M", "3M", "6M"];
     const formattedKey = formatKey(key);
 
-    // Append a "%" sign for time period fields and streaming fee
+    // Append a "%" sign for time period fields
     if (timePeriods.some((period) => formattedKey.startsWith(period))) {
-      return `${parseFloat(value).toLocaleString("en-US")}%`;
-    }
-    if (key === "fee") {
       return `${parseFloat(value).toLocaleString("en-US")}%`;
     }
 
@@ -110,24 +97,13 @@ const IndexDetails: React.FC<{ tokenData: TokenData }> = ({ tokenData }) => {
 
   // Dynamic data section based on selection
   const renderDataSection = () => {
-    let data = null;
-
-    if (selectedDataSection?.startsWith("token-data.")) {
-      const nestedSection = selectedDataSection.split(".")[1];
-      data =
-        tokenData["token-data"][
-          nestedSection as keyof (typeof tokenData)["token-data"]
-        ];
-    } else {
-      data = tokenData[selectedDataSection as keyof TokenData];
-    }
+    let data = tokenData[selectedDataSection as keyof TokenData];
 
     if (data && typeof data === "object" && !Array.isArray(data)) {
       return (
         <div className="mt-4 p-4 bg-gray-50 rounded-lg shadow-inner border border-gray-200">
           <div className="space-y-1">
             {Object.entries(data).map(([key, value]) => {
-              // Ensure that `value` is a string before passing it to `formatValue` and `getColorClass`
               const displayValue =
                 typeof value === "string" ? formatValue(key, value) : "-";
               const colorClass =
@@ -183,9 +159,6 @@ const IndexDetails: React.FC<{ tokenData: TokenData }> = ({ tokenData }) => {
         >
           <option value="price-data">Price Data</option>
           <option value="mcap-data">Market Cap Data</option>
-          <option value="fees-data">Fees Data</option>
-          <option value="token-data.issuance-data">Issuance Data</option>
-          <option value="token-data.redeem-data">Redeem Data</option>
         </select>
       </label>
 

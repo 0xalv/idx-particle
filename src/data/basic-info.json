@@ -1,5 +1,4 @@
 {
-  "id": "settoken-eth.dpi",
   "name": "DeFi Pulse Index",
   "symbol": "DPI",
   "address": "0x1494ca1f11d487c2bbe4543e90080aeba4ba3c2b",
@@ -20,33 +19,8 @@
     "3m-delta": "-90.45",
     "6m-delta": "-94.45"
   },
-  "fees-data": {
-    "fee": "0.25",
-    "total": "1288",
-    "24h-delta": "2",
-    "7d-delta": "222",
-    "1m-delta": "804",
-    "3m-delta": "1101",
-    "6m-delta": "1101"
-  },
   "token-data": {
     "supply": "13555",
-    "issuance-data": {
-      "total": "18555",
-      "24h-delta": "23",
-      "7d-delta": "123",
-      "1m-delta": "356",
-      "3m-delta": "3433",
-      "6m-delta": "3733"
-    },
-    "redeem-data": {
-      "total": "1234",
-      "24h-delta": "34",
-      "7d-delta": "333",
-      "1m-delta": "356",
-      "3m-delta": "1000",
-      "6m-delta": "1100"
-    },
     "distribution": [
       {
         "symbol": "WBTC",
