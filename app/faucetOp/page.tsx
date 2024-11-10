@@ -165,8 +165,8 @@ export default function Component() {
           Test Tokens Available. <br /> Start Trading Now.
         </h2>
         <h3 className="text-[#859393] max-w-lg text-center text-sm font-medium md:text-base">
-          Use this tool to get tokens for testing the platform. Mint multiple
-          tokens at once to explore all features.
+          Use this tool to get tokens for testing the platform from Arbitrum
+          Sepolia using <strong>Klaster</strong>.
         </h3>
         <button
           onClick={handleMint}
