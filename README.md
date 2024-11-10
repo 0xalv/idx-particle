@@ -52,7 +52,6 @@ Built with:
 - SetToken protocol for index functionality
 - Across Protocol for token bridging
 
-## Additional Submission Repositories:
+## Contracts Repository:
 
 - Contracts: https://github.com/uri011/particle-hackathon-contracts
-- Server: https://github.com/uri011/particle-hackathon-server
