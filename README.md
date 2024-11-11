@@ -55,3 +55,9 @@ Built with:
 ## Contracts Repository:
 
 - Contracts: https://github.com/uri011/particle-hackathon-contracts
+
+## Server Repository
+
+Here is the docker image of the server: https://hub.docker.com/repository/docker/uri011/server-particle/general
+
+- Server: https://github.com/uri011/particle-hackathon-server

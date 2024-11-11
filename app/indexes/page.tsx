@@ -6,11 +6,7 @@ import { Abi, Address } from "viem";
 import { Controller, SetToken } from "@/abis";
 import Link from "next/link";
 
-interface IndexesProps {
-  status: string | undefined;
-}
-
-const Indexes: React.FC<IndexesProps> = ({ status }) => {
+const Indexes = () => {
   const controllerAddress = process.env.NEXT_PUBLIC_CONTROLLER as Address;
   if (!controllerAddress) throw new Error("Missing contract address");
 

@@ -24,10 +24,6 @@ import {
 } from "viem";
 import Link from "next/link";
 
-interface SetDetailsProps {
-  status?: string;
-}
-
 interface ContractData {
   abi: any;
   address: `0x${string}`;
@@ -49,7 +45,7 @@ interface DataItem {
   status: string;
 }
 
-const SetDetails: React.FC<SetDetailsProps> = () => {
+const SetDetails = () => {
   const [primaryWallet] = useWallets();
   const { chain, address: userWallet, isConnected } = useAccount();
   const publicClient = usePublicClient();

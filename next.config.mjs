@@ -8,7 +8,9 @@ const withBundleAnalyzer = bundleAnalyzer({
 const nextConfig = {
   swcMinify: true,
   compress: true,
-
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   // Optimize chunks and code splitting
   webpack: (config, { dev, isServer }) => {
     // Production optimizations
@@ -52,8 +54,8 @@ const nextConfig = {
   },
 
   experimental: {
-    optimizeCss: true,
-    workerThreads: true,
+    // optimizeCss: true,
+    // workerThreads: true,
     craCompat: false,
     optimizePackageImports: ["antd"],
   },

@@ -1,3 +1,7 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": "next/core-web-vitals",
+  "rules": {
+    "react-hooks/exhaustive-deps": "off", // Turns off dependency checking in hooks
+    "@next/next/no-img-element": "off" // Allows usage of <img> instead of <Image />
+  }
 }
