@@ -1,5 +1,6 @@
-import products from "@/data/products.json";
-import tokenLogos from "@/data/tokenLogos.json";
+"use client"; // Marks this component as a Client Component
+
+import tokenLogos from "@/data/tokenLogos.json"; // Assuming you still need this for logos
 import Link from "next/link";
 
 const getRandomLogo = () => {
@@ -7,7 +8,16 @@ const getRandomLogo = () => {
   return tokenLogos[randomIndex].logo;
 };
 
-const ProductTable = () => {
+interface Product {
+  name: string;
+  symbol: string;
+  address: string;
+  price: string;
+  change: string;
+  tvl: string;
+}
+
+const ProductTable = ({ products }: { products: Product[] }) => {
   return (
     <div className="px-2 pt-16 sm:px-4 md:px-8 md:pt-20 lg:px-12">
       <div className="flex flex-col items-center space-y-10 md:space-y-12">
@@ -16,7 +26,7 @@ const ProductTable = () => {
         </h2>
 
         <h3 className="text-[#859393] max-w-lg text-center text-sm font-medium md:text-base">
-          Unlock powerful sector, leverage and yield strategies with our index
+          Unlock powerful sector, leverage, and yield strategies with our index
           tokens.
         </h3>
 
@@ -34,6 +44,7 @@ const ProductTable = () => {
         {/* Desktop Table */}
         <div className="bg-white border-gray-100 mt-8 w-full overflow-auto rounded-3xl border py-4 shadow-sm hidden md:flex flex-col">
           <div className="hidden justify-between py-6 md:flex">
+            {/* Table Headers */}
             <div className="text-[#627171] hover:text-[#364647] min-w-[410px] cursor-pointer items-center px-6 text-left text-sm font-medium group">
               Index
               <svg
@@ -63,7 +74,7 @@ const ProductTable = () => {
               24h
             </div>
             <div className="text-[#627171] hover:text-[#364647] min-w-[120px] text-right font-medium pr-8">
-              TVL
+              Market Cap
             </div>
           </div>
 

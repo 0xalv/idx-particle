@@ -1,90 +1,114 @@
 [
   {
+    "logo": "https://set-core.s3.amazonaws.com/img/portfolios/mvi.svg",
     "name": "Metaverse Index",
     "symbol": "MVI",
-    "address": "0x0d123B868a2ADbdCa9d4b29aB0133d43Bb743c0b",
     "price": "$26.14",
     "change": "2.05%",
-    "tvl": "$4.04M"
+    "apy": "",
+    "tvl": "$4.04M",
+    "theme": "Metaverse",
+    "type": "Index",
+    "amount": 100,
+    "unrealizedPL": "-$150.00",
+    "realizedPL": "$30.00"
   },
   {
-    "name": "Interest Compounding ETH Index",
-    "symbol": "icETH",
-    "address": "0x0d123B868a2ADbdCa9d4b29aB0133d43Bb743c0b",
-    "price": "$2,811.55",
-    "change": "-0.50%",
-    "tvl": "$7.32M"
-  },
-  {
-    "name": "Index Coop Large Cap Index",
-    "symbol": "ic21",
-    "address": "0x0d123B868a2ADbdCa9d4b29aB0133d43Bb743c0b",
-    "price": "$203.24",
-    "change": "2.35%",
-    "tvl": "$112.12K"
-  },
-  {
-    "name": "Index Coop Ethereum 2x Index",
-    "symbol": "ETH2X",
-    "address": "0x0d123B868a2ADbdCa9d4b29aB0133d43Bb743c0b",
-    "price": "$39.17",
-    "change": "1.83%",
-    "tvl": "$18.36M"
-  },
-  {
+    "logo": "https://cdn.indexcoop.com/btc2x.svg",
     "name": "Index Coop Bitcoin 2x Index",
     "symbol": "BTC2X",
-    "address": "0x0d123B868a2ADbdCa9d4b29aB0133d43Bb743c0b",
     "price": "$99.16",
     "change": "4.90%",
-    "tvl": "$5.68M"
+    "apy": "",
+    "tvl": "$5.68M",
+    "theme": "BTC",
+    "type": "Leverage",
+    "amount": 60,
+    "unrealizedPL": "$30.00",
+    "realizedPL": "$15.00"
   },
   {
+    "logo": "https://cdn.indexcoop.com/hyeth.svg",
     "name": "High Yield ETH Index",
     "symbol": "hyETH",
-    "address": "0x0d123B868a2ADbdCa9d4b29aB0133d43Bb743c0b",
     "price": "$2,445.69",
     "change": "0.63%",
-    "tvl": "$5.08M"
+    "apy": "4.09%",
+    "tvl": "$5.08M",
+    "theme": "ETH",
+    "type": "Yield",
+    "amount": 120,
+    "unrealizedPL": "$60.00",
+    "realizedPL": "-$70.00"
   },
   {
+    "logo": "https://app.indexcoop.com/assets/gtceth_logo.svg",
     "name": "Gitcoin Staked ETH Index",
     "symbol": "gtcETH",
-    "address": "0x0d123B868a2ADbdCa9d4b29aB0133d43Bb743c0b",
     "price": "$2,774.73",
     "change": "0.00%",
-    "tvl": "$235.73K"
+    "apy": "0.93%",
+    "tvl": "$235.73K",
+    "theme": "ETH",
+    "type": "Yield",
+    "amount": 80,
+    "unrealizedPL": "$40.00",
+    "realizedPL": "$20.00"
   },
   {
+    "logo": "https://app.indexcoop.com/assets/dseth_logo.svg",
     "name": "Diversified Staked ETH Index",
     "symbol": "dsETH",
-    "address": "0x0d123B868a2ADbdCa9d4b29aB0133d43Bb743c0b",
     "price": "$2,680.83",
     "change": "0.46%",
-    "tvl": "$1.65M"
+    "apy": "2.93%",
+    "tvl": "$1.65M",
+    "theme": "ETH",
+    "type": "Yield",
+    "amount": 90,
+    "unrealizedPL": "$45.20",
+    "realizedPL": "$22.00"
   },
   {
+    "logo": "https://index-dao.s3.amazonaws.com/defi_pulse_index_set.svg",
     "name": "DeFi Pulse Index",
     "symbol": "DPI",
-    "address": "0x0d123B868a2ADbdCa9d4b29aB0133d43Bb743c0b",
     "price": "$79.60",
     "change": "2.52%",
-    "tvl": "$14.95M"
+    "apy": "",
+    "tvl": "$14.95M",
+    "theme": "DeFi",
+    "type": "Index",
+    "amount": 200,
+    "unrealizedPL": "$100.00",
+    "realizedPL": "-$45.00"
   },
   {
+    "logo": "https://uploads-ssl.webflow.com/62e3ff7a08cb1968bf057388/651f04818f458f918171c84d_cdETI-logo.svg",
     "name": "CoinDesk ETH Trend Index",
     "symbol": "cdETI",
-    "address": "0x0d123B868a2ADbdCa9d4b29aB0133d43Bb743c0b",
     "price": "$131.41",
     "change": "0.31%",
-    "tvl": "$21.83K"
+    "apy": "",
+    "tvl": "$21.83K",
+    "theme": "ETH",
+    "type": "Index",
+    "amount": 55,
+    "unrealizedPL": "$27.50",
+    "realizedPL": "$12.50"
   },
   {
+    "logo": "https://app.indexcoop.com/_next/image?url=%2Fassets%2Fbed-border.png&w=64&q=75",
     "name": "Bankless BED Index",
     "symbol": "BED",
-    "address": "0x0d123B868a2ADbdCa9d4b29aB0133d43Bb743c0b",
     "price": "$103.22",
     "change": "2.22%",
-    "tvl": "$636.31K"
+    "apy": "",
+    "tvl": "$636.31K",
+    "theme": "DeFi",
+    "type": "Index",
+    "amount": 130,
+    "unrealizedPL": "$65.00",
+    "realizedPL": "$30.00"
   }
 ]

@@ -35,12 +35,9 @@ type TokenData = {
   address: string;
   "deploy-timestamp": string;
   "price-data": DataSection;
-  "mcap-data": DataSection;
-  "fees-data": DataSection;
   "token-data": {
     supply: string;
-    "issuance-data": DataSection;
-    "redeem-data": DataSection;
+    mcap: string;
     distribution: Distribution[];
   };
 };
@@ -70,6 +67,7 @@ const ProductInfo: React.FC = () => {
   const timeRanges = ["24h-ts", "7d-ts", "1m-ts", "3m-ts", "6m-ts"] as const;
 
   useEffect(() => {
+    // Fetch mock chart data
     const fetchChartData = async () => {
       try {
         const response = await fetch("/src/data/advanced-info.json");
@@ -81,9 +79,15 @@ const ProductInfo: React.FC = () => {
       }
     };
 
+    // Fetch token data from API using indexAddress
     const fetchTokenData = async () => {
       try {
-        const response = await fetch("/src/data/basic-info.json");
+        const response = await fetch(
+          `http://ec2-54-174-164-111.compute-1.amazonaws.com/api/token/${indexAddress}`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch token data");
+        }
         const json = await response.json();
         setTokenData(json); // Set the token data for IndexDetails
       } catch (error) {
@@ -93,7 +97,7 @@ const ProductInfo: React.FC = () => {
 
     fetchChartData();
     fetchTokenData();
-  }, []);
+  }, [indexAddress]);
 
   // Update chart data when selectedRange changes
   useEffect(() => {

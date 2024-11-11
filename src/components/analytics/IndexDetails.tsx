@@ -7,8 +7,8 @@ interface TokenData {
   address: string;
   "deploy-timestamp": string;
   "price-data": DataSection;
-  "mcap-data": DataSection;
   "token-data": {
+    mcap: string;
     supply: string;
     distribution: Distribution[];
   };
@@ -36,12 +36,8 @@ const IndexDetails: React.FC<{ tokenData: TokenData }> = ({ tokenData }) => {
     Number(tokenData["deploy-timestamp"]) * 1000
   ).toLocaleDateString();
 
-  // Function to format keys to readable labels
   const formatKey = (key: string) => {
     if (key === "price") return "Current Price";
-    if (key === "mcap") return "Market Cap";
-
-    // Replace delta and capitalize abbreviations for time periods (24H, 7D, etc.)
     if (key.includes("delta")) {
       return key
         .replace("delta", "")
@@ -51,51 +47,40 @@ const IndexDetails: React.FC<{ tokenData: TokenData }> = ({ tokenData }) => {
         .replace("m", "M")
         .replace(/^\w/, (c) => c.toUpperCase());
     }
-
-    // Default formatting for general cases
     return key.replace(/-/g, " ").replace(/^\w/, (c) => c.toUpperCase());
   };
 
-  // Function to format the displayed value
   const formatValue = (key: string, value: string) => {
     const timePeriods = ["24H", "7D", "1M", "3M", "6M"];
     const formattedKey = formatKey(key);
 
-    // Append a "%" sign for time period fields
     if (timePeriods.some((period) => formattedKey.startsWith(period))) {
       return `${parseFloat(value).toLocaleString("en-US")}%`;
     }
 
-    // Prepend a "$" sign for Market Cap and Current Price
-    if (key === "mcap" || key === "price") {
+    if (key === "price") {
       return `$${parseFloat(value).toLocaleString("en-US")}`;
     }
 
-    // Format all other numeric values with commas
     const numericValue = parseFloat(value);
     if (!isNaN(numericValue)) {
       return numericValue.toLocaleString("en-US");
     }
 
-    // Return the original value if it’s not a number
     return value;
   };
 
-  // Function to determine the color class for positive, negative, and default values
   const getColorClass = (key: string, value: string) => {
     const timePeriods = ["24H", "7D", "1M", "3M", "6M"];
     const formattedKey = formatKey(key);
 
-    // Check if the key is in the list of time period fields for red/green colors
     if (timePeriods.some((period) => formattedKey.startsWith(period))) {
       return parseFloat(value) > 0 ? "text-green-600" : "text-red-600";
     }
 
-    // Default color for all other values
     return "text-[#627171]";
   };
 
-  // Dynamic data section based on selection
   const renderDataSection = () => {
     let data = tokenData[selectedDataSection as keyof TokenData];
 
@@ -147,6 +132,9 @@ const IndexDetails: React.FC<{ tokenData: TokenData }> = ({ tokenData }) => {
         <strong className="font-semibold">Supply:</strong>{" "}
         {parseFloat(tokenData["token-data"].supply).toLocaleString("en-US")}
       </p>
+      <p className="text-gray-700 mb-4">
+        <strong className="font-semibold">Market Cap:</strong> $198.4
+      </p>
 
       <label className="block mb-3">
         <span className="text-sm font-semibold text-gray-800">
@@ -158,7 +146,6 @@ const IndexDetails: React.FC<{ tokenData: TokenData }> = ({ tokenData }) => {
           value={selectedDataSection}
         >
           <option value="price-data">Price Data</option>
-          <option value="mcap-data">Market Cap Data</option>
         </select>
       </label>
 
