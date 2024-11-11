@@ -11,6 +11,9 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  images: {
+    domains: ["app.indexcoop.com"],
+  },
   // Optimize chunks and code splitting
   webpack: (config, { dev, isServer }) => {
     // Production optimizations

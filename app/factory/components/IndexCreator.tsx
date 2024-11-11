@@ -1,7 +1,6 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import Image from "next/image";
 import React, { useState } from "react";
 import DownOutlined from "@ant-design/icons/DownOutlined";
 import tokenList from "@/data/tokenListBaseSep.json";
@@ -292,7 +291,7 @@ export const IndexCreator: React.FC = () => {
             className="flex items-center border border-gray-300 rounded-lg p-4 cursor-pointer transition-transform"
             onClick={openModal}
           >
-            <Image
+            <img
               src={tokenOne.img}
               alt={tokenOne.ticker}
               className="w-8 h-8 mr-2"
@@ -309,7 +308,7 @@ export const IndexCreator: React.FC = () => {
                 key={index}
                 className="flex items-center mb-4 bg-gray-200 p-3 rounded-lg"
               >
-                <Image
+                <img
                   src={item.token.img}
                   alt={item.token.ticker}
                   className="w-6 h-6 mr-3"
@@ -398,7 +397,7 @@ export const IndexCreator: React.FC = () => {
                   onClick={() => modifyToken(token.ticker)}
                   className="flex items-center mb-3 p-3 hover:bg-gray-100 rounded-lg cursor-pointer transition-transform transform"
                 >
-                  <Image
+                  <img
                     src={token.img}
                     alt={token.ticker}
                     className="w-8 h-8 mr-4"
