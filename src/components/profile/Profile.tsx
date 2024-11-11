@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import profileData from "@/data/profile.json";
+import Image from "next/image";
 
 // Define the profile type based on your JSON structure
 type ProfileItem = {
@@ -41,7 +42,7 @@ const Profile = () => {
           total + parseFloat(item.realizedPL.replace(/[$,]/g, "")),
         0
       ),
-    [profileData]
+    []
   );
 
   const totalUnrealizedPL = useMemo(
@@ -51,7 +52,7 @@ const Profile = () => {
           total + parseFloat(item.unrealizedPL.replace(/[$,]/g, "")),
         0
       ),
-    [profileData]
+    []
   );
 
   // Toggle sorting direction and set column to be sorted
@@ -274,7 +275,7 @@ const Profile = () => {
                 >
                   <div className="text-[#627171] text-sm font-medium min-w-[410px] flex items-center pl-6">
                     <div className="mr-2 overflow-hidden rounded-full">
-                      <img
+                      <Image
                         alt={`${product.symbol} logo`}
                         loading="lazy"
                         width="30"

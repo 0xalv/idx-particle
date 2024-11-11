@@ -2,6 +2,7 @@
 
 import tokenLogos from "@/data/tokenLogos.json"; // Assuming you still need this for logos
 import Link from "next/link";
+import Image from "next/image";
 
 const getRandomLogo = () => {
   const randomIndex = Math.floor(Math.random() * tokenLogos.length);
@@ -97,7 +98,7 @@ const ProductTable = ({ products }: { products: Product[] }) => {
                 >
                   <div className="text-[#627171] text-sm font-medium min-w-[410px] flex items-center pl-6">
                     <div className="mr-2 overflow-hidden rounded-full">
-                      <img
+                      <Image
                         alt={`${product.symbol} logo`}
                         loading="lazy"
                         width="30"
@@ -159,7 +160,7 @@ const ProductTable = ({ products }: { products: Product[] }) => {
               >
                 <div className="text-[#627171] text-sm font-medium text-right flex w-full self-start pb-4">
                   <div className="mr-2 min-w-[30px] overflow-hidden rounded-full">
-                    <img
+                    <Image
                       alt={`${product.symbol} logo`}
                       loading="lazy"
                       width="30"
