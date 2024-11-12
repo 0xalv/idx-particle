@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { formatUnits } from "viem";
 
 interface TokenData {
   id: string;
@@ -130,7 +131,7 @@ const IndexDetails: React.FC<{ tokenData: TokenData }> = ({ tokenData }) => {
       </p>
       <p className="text-gray-700 mb-4">
         <strong className="font-semibold">Supply:</strong>{" "}
-        {parseFloat(tokenData["token-data"].supply).toLocaleString("en-US")}
+        {formatUnits(BigInt(tokenData["token-data"].supply), 18)}
       </p>
       <p className="text-gray-700 mb-4">
         <strong className="font-semibold">Market Cap:</strong> $198.4
