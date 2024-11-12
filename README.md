@@ -2,6 +2,8 @@
 
 IDX is a cutting-edge platform for creating and managing crypto indexes across different blockchains, leveraging advanced chain abstraction technologies for a seamless user experience.
 
+> **Note**: When testing this application, you may need to enable insecure content in your browser settings. This is due to certain backend resources currently being served over HTTP, while the frontend is served over HTTPS. Allowing insecure content ensures that all features function as expected without any content-blocking issues in your browser. We are working on a secure configuration for production, but this step may be required for testing environments.
+
 ## 💫 Protocol Overview
 
 IDX builds on Set Protocol to enable anyone to create and manage their own crypto indexes:
@@ -61,3 +63,7 @@ Built with:
 Here is the docker image of the server: https://hub.docker.com/repository/docker/uri011/server-particle/general
 
 - Server: https://github.com/uri011/particle-hackathon-server
+
+## Live Website
+
+- https://idx-particle.vercel.app/

@@ -1,6 +1,5 @@
 "use client"; // Marks this component as a Client Component
 
-import { useState, useEffect } from "react";
 import tokenLogos from "@/data/tokenLogos.json"; // Assuming you still need this for logos
 import Link from "next/link";
 
@@ -18,23 +17,7 @@ interface Product {
   tvl: string;
 }
 
-const ProductTable = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch("/api/tokens");
-        const data = await response.json();
-        setProducts(data);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
-
-    fetchProducts();
-  }, []);
-
+const ProductTable = ({ products }: { products: Product[] }) => {
   return (
     <div className="px-2 pt-16 sm:px-4 md:px-8 md:pt-20 lg:px-12">
       <div className="flex flex-col items-center space-y-10 md:space-y-12">
