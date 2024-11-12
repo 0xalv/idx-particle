@@ -82,9 +82,10 @@ const ProductInfo: React.FC = () => {
     // Fetch token data from API using indexAddress
     const fetchTokenData = async () => {
       try {
-        const response = await fetch(
-          `http://ec2-54-174-164-111.compute-1.amazonaws.com/api/token/${indexAddress}`
-        );
+        // const response = await fetch(
+        //   `http://ec2-54-174-164-111.compute-1.amazonaws.com/api/token/${indexAddress}`
+        // );
+        const response = await fetch(`/api/token/${indexAddress}`);
         if (!response.ok) {
           throw new Error("Failed to fetch token data");
         }
