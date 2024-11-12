@@ -27,7 +27,7 @@ const IndexDistribution: React.FC<{ tokenData: TokenData }> = ({
   tokenData,
 }) => {
   const data = tokenData["token-data"].distribution.map((item) => ({
-    name: item.symbol,
+    name: item.symbol === "UNKNOWN" ? item.address : item.symbol,
     value: parseFloat(item.portion),
   }));
 
